@@ -5,6 +5,7 @@ export default {
         flex: 1;
         padding: 20px;
         background-color: #F5F6FA;
+        justify-content: center;
     `,
     Logo: styled.Image`
         width: 250px;
@@ -24,7 +25,7 @@ export default {
         margin-bottom: 15px;
     `,
     ButtonArea: styled.TouchableOpacity`
-        background-color: #8863E6;
+        background-color: #000;
         padding: 12px;
         justify-content: center;
         align-items: center;

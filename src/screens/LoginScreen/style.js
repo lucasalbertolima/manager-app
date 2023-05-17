@@ -37,5 +37,14 @@ export default {
         color: #FFF;
         font-size: 15px;
         font-weight: bold;
+    `,
+    TextSignupForget: styled.Text`
+        color: #000;
+        margin-top: 15px;
+        text-align: center;
+    `,
+    TextLink: styled.Text`
+        color: #0000FF;
+        
     `
 };

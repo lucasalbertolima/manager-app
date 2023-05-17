@@ -15,17 +15,11 @@ export default () => {
             let token = await api.getToken();
             if(token) {
                 let result = await api.validateToken();
-                if(result.error === ''){
-
-                    dispatch({
-                        type: 'setUser',
-                        payload: {
-                            user: result.user
-                        }
-                    })
+                if(result != null){
+                    
                     navigation.reset({
                         index: 1,
-                        routes: [{name: 'ChoosePropertyScreen'}]}
+                        routes: [{name: 'HomeScreen'}]}
                     );
 
                 } else {

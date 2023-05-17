@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const initialState = {
-    common: {
+    token: {
         
     },
     user: {
@@ -61,9 +61,9 @@ export default (state = initialState, action = {}) => {
 
     switch(action.type) {
         case 'setToken':
-            if (action && action.payload && action.payload.common) {
-            AsyncStorage.setItem('token', action.payload.common);
-            return{...state, token: action.payload.common};
+            if (action && action.payload && action.payload.token) {
+            AsyncStorage.setItem('token', action.payload.token);
+            return{...state, token: action.payload.token};
             }
         break;
         case 'setUser':

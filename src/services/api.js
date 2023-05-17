@@ -42,26 +42,22 @@ export default {
     
     validateToken: async () => {
         let token = await AsyncStorage.getItem('token');
-        if(token){
-            let json = await request('post', '/auth/validate', {}, token);
-        }
+        let json = await request('post', '/account/identify', {}, token);
         return json;
     },
-
     login: async (email, password) => {
         let json = await request('post', '/account/signin', {email, password});
         return json;
     },
-    logout: async () => {
+    getUser: async () => {
         let token = await AsyncStorage.getItem('token');
-        let json = await request('post', '/auth/logout', {}, token);
-        await AsyncStorage.removeItem('token');
+        let json = await request('get', '/account/identify', {}, token);
         return json;
     },
-    register: async (name, email, cpf, password, password_confirm) => {
-        let json = await request('post', '/auth/register', {
-            name, email, cpf, password, password_confirm
-        });
+    logout: async () => {
+        let token = await AsyncStorage.getItem('token');
+        await AsyncStorage.removeItem('token');
+        let json = await request('post', '/account/signin', {}, token);
         return json;
     }
     
