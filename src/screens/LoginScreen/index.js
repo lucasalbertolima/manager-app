@@ -21,8 +21,7 @@ export default () => {
                 dispatch({type: 'setToken', payload: token});
 
                 navigation.reset({
-                    index: 1,
-                    routes: [{name: 'HomeScreen'}]}
+                    routes: [{name: 'MainTab'}]}
                 );
             } else {
                 alert("Senha e/ou email incorreto(s)");

@@ -55,10 +55,7 @@ export default {
         return json;
     },
     logout: async () => {
-        let token = await AsyncStorage.getItem('token');
         await AsyncStorage.removeItem('token');
-        let json = await request('post', '/account/signin', {}, token);
-        return json;
     }
     
     }

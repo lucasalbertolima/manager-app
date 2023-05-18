@@ -3,7 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import PreloadScreen from '../screens/PreloadScreen';
 import LoginScreen from "../screens/LoginScreen";
-import HomeScreen from "../screens/HomeScreen";
+import MainTab from "../tabs/MainTab";
 
 const Stack = createStackNavigator();
 
@@ -21,8 +21,8 @@ export default () => {
                 options={{headerShown: false}}
             />
             <Stack.Screen
-                name="HomeScreen"
-                component={HomeScreen}
+                name="MainTab"
+                component={MainTab}
                 options={{headerShown: false}}
             />
         </Stack.Navigator>

@@ -6,16 +6,7 @@ const initialState = {
         
     },
     user: {
-        user: {
-            balances_available: {
-                Brasil: 0,
-                Exterior: 0,
-            },
-        },
-        balances: {
-            balance: 0,
-            total_balance: 0,
-        },
+        
     },
     client: {
         
@@ -67,7 +58,9 @@ export default (state = initialState, action = {}) => {
             }
         break;
         case 'setUser':
+            if(user){
             return{...state, user: action.payload.user};
+            }
         break;
         case 'setProperty':
             return{...state, property: action.payload.property};

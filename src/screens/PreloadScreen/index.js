@@ -16,10 +16,8 @@ export default () => {
             if(token) {
                 let result = await api.validateToken();
                 if(result != null){
-                    
                     navigation.reset({
-                        index: 1,
-                        routes: [{name: 'HomeScreen'}]}
+                        routes: [{name: 'MainTab'}]}
                     );
 
                 } else {
