@@ -1,24 +1,10 @@
 import styled from "styled-components/native";
-import { Platform, StatusBar } from 'react-native';
-
-const isAndroid = Platform.OS === 'android';
 
 export default {
-    Container: styled.SafeAreaView`
-        margin-top: ${isAndroid ? `${StatusBar.currentHeight}px` : 0};
+    Container: styled.ScrollView`
         flex: 1;
         padding: 10px;
         background-color: #F5F6FA;
-    `,
-    ContainerInitial: styled.View`
-        padding: 10px;
-        padding-bottom: 25px;
-        border-radius: 5px;
-    `,
-    TitleInitial: styled.Text`
-        color: #000;
-        font-size: 25px;
-        font-weight: bold;
     `,
     SubContainer: styled.View`
         background-color: #EBECF0;
@@ -30,20 +16,19 @@ export default {
     `,
     TitleSubContainer: styled.Text`
         color: #000;
-        font-size: 24px;
+        font-size: 18px;
         font-weight: bold;
-        margin-bottom: 8px;
+        margin-bottom: 4px;
     `,
     SubTitleSubContainer: styled.Text`
         color: #000;
-        font-size: 21px;
-        font-weight: bold;
+        font-size: 16px;
+        margin-bottom: 5px;
     `,
     Balance: styled.Text`
         color: #000;
-        font-size: 18px;
-        font-weight: bold;
-        margin-bottom: 7px;
+        font-size: 15px;
+        margin-bottom: 3px;
     `,
     InformativeText: styled.Text`
         color: #000;

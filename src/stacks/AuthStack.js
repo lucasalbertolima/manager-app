@@ -4,6 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import PreloadScreen from '../screens/PreloadScreen';
 import LoginScreen from "../screens/LoginScreen";
 import MainTab from "../tabs/MainTab";
+import ProfileDataScreen from "../screens/ProfileDataScreen";
 
 const Stack = createStackNavigator();
 
@@ -24,6 +25,13 @@ export default () => {
                 name="MainTab"
                 component={MainTab}
                 options={{headerShown: false}}
+            />
+            <Stack.Screen
+                name="ProfileDataScreen"
+                component={ProfileDataScreen}
+                options={{
+                    title: 'Dados Pessoais'
+                }}
             />
         </Stack.Navigator>
     )

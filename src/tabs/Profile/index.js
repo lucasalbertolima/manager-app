@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from "react";
-import { Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import C from './style';
 
@@ -35,8 +34,33 @@ export default () => {
 
     return (
         <C.Container>
-             <Text>Olá bem vindo {user}</Text>
-             <C.ButtonArea onPress={handleLogoutButton}>
+            <C.ContainerInitial>
+                <C.TitleInitial>{user}</C.TitleInitial>
+            </C.ContainerInitial>
+
+
+            <C.ContainerButton onPress={() => navigation.navigate('ProfileDataScreen')}>
+                    <C.TitleSubContainer>Meus Dados</C.TitleSubContainer>
+                    <C.InformativeText>Minhas informações da conta</C.InformativeText>
+            </C.ContainerButton>
+
+            <C.ContainerButton>
+                    <C.TitleSubContainer>Alterar Perfil</C.TitleSubContainer>
+                    <C.InformativeText>Atualize o perfil da sua conta</C.InformativeText>
+            </C.ContainerButton>
+
+            <C.ContainerButton>
+                    <C.TitleSubContainer>Alterar Conta Bancária</C.TitleSubContainer>
+                    <C.InformativeText>Altere suas informações bancárias</C.InformativeText>
+            </C.ContainerButton>
+
+            <C.ContainerButton>
+                    <C.TitleSubContainer>Alterar Senha</C.TitleSubContainer>
+                    <C.InformativeText>Altere sua senha</C.InformativeText>
+            </C.ContainerButton>
+
+
+            <C.ButtonArea onPress={handleLogoutButton}>
                 <C.ButtonText>Sair</C.ButtonText>
             </C.ButtonArea>
         </C.Container>

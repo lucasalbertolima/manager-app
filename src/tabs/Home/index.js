@@ -49,14 +49,14 @@ export default () => {
 
             <C.RoundButtonArea onPress={null}>
                 <C.RoundButton>
-                    <C.RoundButtonImage source={require('../../assets/deposit.png')} />
+                    <C.RoundButtonImage source={require('../../assets/withdraw.png')} />
                 </C.RoundButton>
                 <C.RoundButtonText>Sacar</C.RoundButtonText>
             </C.RoundButtonArea>
 
             <C.RoundButtonArea onPress={null}>
                 <C.RoundButton>
-                    <C.RoundButtonImage source={require('../../assets/deposit.png')} />
+                    <C.RoundButtonImage source={require('../../assets/profits.png')} />
                 </C.RoundButton>
                 <C.RoundButtonText>Investir</C.RoundButtonText>
             </C.RoundButtonArea>
