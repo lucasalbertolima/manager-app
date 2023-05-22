@@ -5,6 +5,7 @@ import PreloadScreen from '../screens/PreloadScreen';
 import LoginScreen from "../screens/LoginScreen";
 import MainTab from "../tabs/MainTab";
 import ProfileDataScreen from "../screens/ProfileDataScreen";
+import UpdatePasswordScreen from "../screens/UpdatePasswordScreen";
 
 const Stack = createStackNavigator();
 
@@ -31,6 +32,13 @@ export default () => {
                 component={ProfileDataScreen}
                 options={{
                     title: 'Dados Pessoais'
+                }}
+            />
+            <Stack.Screen
+                name="UpdatePasswordScreen"
+                component={UpdatePasswordScreen}
+                options={{
+                    title: 'Alterar senha'
                 }}
             />
         </Stack.Navigator>

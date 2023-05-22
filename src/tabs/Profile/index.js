@@ -54,7 +54,7 @@ export default () => {
                     <C.InformativeText>Altere suas informações bancárias</C.InformativeText>
             </C.ContainerButton>
 
-            <C.ContainerButton>
+            <C.ContainerButton onPress={() => navigation.navigate('UpdatePasswordScreen')}>
                     <C.TitleSubContainer>Alterar Senha</C.TitleSubContainer>
                     <C.InformativeText>Altere sua senha</C.InformativeText>
             </C.ContainerButton>

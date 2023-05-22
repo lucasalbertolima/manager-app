@@ -56,6 +56,10 @@ export default {
     },
     logout: async () => {
         await AsyncStorage.removeItem('token');
+    },
+    updatePassword: async (password, newPassword) => {
+        let json = await request('post', '/account/update-password', {password, newPassword}, token);
+        return json;
     }
     
     }
