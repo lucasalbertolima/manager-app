@@ -15,16 +15,14 @@ export default () => {
     const [newPassword, setNewPassword] = useState('');
     const [newPasswordTwo, setNewPasswordTwo] = useState('');
 
-    const handlePassworButton = async () => {
-        if(password && newPassword && newPasswordTwo && newPassword === newPasswordTwo) {
+    const handlePasswordButton = async () => {
+        if(password && newPassword && newPasswordTwo && (newPassword === newPasswordTwo)) {
             let token = await api.updatePassword(newPassword, password);
-            if(token.length > 0){
-                dispatch({type: 'setToken', payload: token});
-            } else if(error === "Senha Incorreta") {
-                alert("Senha atual incorreta");
+            if(token.error != 'Senha Incorreta'){
+                alert("Senha alterada com sucesso");
             } else {
-                alert(error);
-            }
+                alert("Senha atual incorreta");
+            } 
         } else {
             alert("Preencha os campos corretamente");
         }
@@ -59,7 +57,7 @@ export default () => {
                 onChangeText={t=>setNewPasswordTwo(t)}
             />
 
-            <C.ButtonArea onPress={handlePassworButton}>
+            <C.ButtonArea onPress={handlePasswordButton}>
                 <C.ButtonText>Alterar Senha</C.ButtonText>
             </C.ButtonArea>
 

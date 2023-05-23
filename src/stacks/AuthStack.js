@@ -6,6 +6,7 @@ import LoginScreen from "../screens/LoginScreen";
 import MainTab from "../tabs/MainTab";
 import ProfileDataScreen from "../screens/ProfileDataScreen";
 import UpdatePasswordScreen from "../screens/UpdatePasswordScreen";
+import UpdateProfileScreen from "../screens/UpdateProfileScreen";
 
 const Stack = createStackNavigator();
 
@@ -39,6 +40,13 @@ export default () => {
                 component={UpdatePasswordScreen}
                 options={{
                     title: 'Alterar senha'
+                }}
+            />
+            <Stack.Screen
+                name="UpdateProfileScreen"
+                component={UpdateProfileScreen}
+                options={{
+                    title: 'Atualizar Perfil'
                 }}
             />
         </Stack.Navigator>

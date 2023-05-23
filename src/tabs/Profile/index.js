@@ -44,7 +44,7 @@ export default () => {
                     <C.InformativeText>Minhas informações da conta</C.InformativeText>
             </C.ContainerButton>
 
-            <C.ContainerButton>
+            <C.ContainerButton  onPress={() => navigation.navigate('UpdateProfileScreen')}>
                     <C.TitleSubContainer>Alterar Perfil</C.TitleSubContainer>
                     <C.InformativeText>Atualize o perfil da sua conta</C.InformativeText>
             </C.ContainerButton>

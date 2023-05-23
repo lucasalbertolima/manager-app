@@ -45,20 +45,36 @@ export default {
         let json = await request('post', '/account/identify', {}, token);
         return json;
     },
+
     login: async (email, password) => {
         let json = await request('post', '/account/signin', {email, password});
         return json;
     },
+
     getUser: async () => {
         let token = await AsyncStorage.getItem('token');
         let json = await request('get', '/account/identify', {}, token);
         return json;
     },
+
     logout: async () => {
         await AsyncStorage.removeItem('token');
     },
-    updatePassword: async (password, newPassword) => {
-        let json = await request('post', '/account/update-password', {password, newPassword}, token);
+
+    updatePassword: async (newPassword, password) => {
+        let token = await AsyncStorage.getItem('token');
+        let json = await request('post', '/account/update-password', {newPassword, password}, token);
+        return json;
+    },
+    updateProfile: async ( name, cpf, email, date_of_birth, phone, address ) => {
+        let token = await AsyncStorage.getItem('token');
+        let json = await request('post', '/account/update', {name,
+            cpf,
+            email,
+            date_of_birth,
+            phone,
+            address
+        }, token);
         return json;
     }
     
