@@ -35,7 +35,7 @@ export default () => {
     return (
         <C.Container>
             <C.ContainerInitial>
-                <C.TitleInitial>{user}</C.TitleInitial>
+                <C.TitleInitial>Perfil: {'\n'}{user}</C.TitleInitial>
             </C.ContainerInitial>
 
 
@@ -49,7 +49,7 @@ export default () => {
                     <C.InformativeText>Atualize o perfil da sua conta</C.InformativeText>
             </C.ContainerButton>
 
-            <C.ContainerButton>
+            <C.ContainerButton onPress={() => navigation.navigate('UpdateBankAccountScreen')}>
                     <C.TitleSubContainer>Alterar Conta Bancária</C.TitleSubContainer>
                     <C.InformativeText>Altere suas informações bancárias</C.InformativeText>
             </C.ContainerButton>

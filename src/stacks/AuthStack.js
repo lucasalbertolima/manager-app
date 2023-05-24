@@ -4,9 +4,10 @@ import { createStackNavigator } from "@react-navigation/stack";
 import PreloadScreen from '../screens/PreloadScreen';
 import LoginScreen from "../screens/LoginScreen";
 import MainTab from "../tabs/MainTab";
-import ProfileDataScreen from "../screens/ProfileDataScreen";
-import UpdatePasswordScreen from "../screens/UpdatePasswordScreen";
-import UpdateProfileScreen from "../screens/UpdateProfileScreen";
+import ProfileDataScreen from "../screens/ScreensProfileTab/ProfileDataScreen";
+import UpdatePasswordScreen from "../screens/ScreensProfileTab/UpdatePasswordScreen";
+import UpdateProfileScreen from "../screens/ScreensProfileTab/UpdateProfileScreen";
+import UpdateBankAccountScreen from "../screens/ScreensProfileTab/UpdateBankAccountScreen";
 
 const Stack = createStackNavigator();
 
@@ -47,6 +48,13 @@ export default () => {
                 component={UpdateProfileScreen}
                 options={{
                     title: 'Atualizar Perfil'
+                }}
+            />
+            <Stack.Screen
+                name="UpdateBankAccountScreen"
+                component={UpdateBankAccountScreen}
+                options={{
+                    title: 'Atualizar Dados Bancários'
                 }}
             />
         </Stack.Navigator>

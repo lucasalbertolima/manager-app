@@ -4,8 +4,8 @@ import C from './style';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
-import api from '../../services/api';
-import { useStateValue } from '../../contexts/StateContext'; 
+import api from '../../../services/api';
+import { useStateValue } from '../../../contexts/StateContext'; 
 
 export default () => {
 
@@ -53,7 +53,7 @@ export default () => {
 
     const handleUpdateProfileButton = async () => {
         if(name && cpf && email && dateOfBirth && phone && street && country) {
-            let result = await api.updateProfile({
+            const data = {
                 name: name,
                 cpf: cpf,
                 email: email,
@@ -68,11 +68,12 @@ export default () => {
                     line_2: streetAddress,
                     number: number
                 }
-            });
+            };
+            let result = await api.updateProfile(data);
             if(result.errors){
-                alert("Houve erro");
+                alert(result.errors[0]);
             } else {
-                alert("Foi salvo");
+                alert("Seus dados foram atualizados com sucesso");
             } 
         } else {
             alert("Preencha os campos corretamente");

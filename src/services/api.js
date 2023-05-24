@@ -66,15 +66,14 @@ export default {
         let json = await request('post', '/account/update-password', {newPassword, password}, token);
         return json;
     },
-    updateProfile: async ( name, cpf, email, date_of_birth, phone, address ) => {
+    updateProfile: async ( data ) => {
         let token = await AsyncStorage.getItem('token');
-        let json = await request('post', '/account/update', {name,
-            cpf,
-            email,
-            date_of_birth,
-            phone,
-            address
-        }, token);
+        let json = await request('post', '/account/update', data, token);
+        return json;
+    },
+    updateBankAccount: async ( data ) => {
+        let token = await AsyncStorage.getItem('token');
+        let json = await request('post', '/account/bank-account', data, token);
         return json;
     }
     

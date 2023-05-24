@@ -3,8 +3,8 @@ import { useNavigation } from "@react-navigation/native";
 import C from './style';
 import { Linking } from "react-native";
 
-import api from '../../services/api';
-import { useStateValue } from '../../contexts/StateContext'; 
+import api from '../../../services/api';
+import { useStateValue } from '../../../contexts/StateContext'; 
 
 export default () => {
 

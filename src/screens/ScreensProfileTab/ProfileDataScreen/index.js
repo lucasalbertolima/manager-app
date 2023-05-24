@@ -4,8 +4,8 @@ import C from './style';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
-import api from '../../services/api';
-import { useStateValue } from '../../contexts/StateContext'; 
+import api from '../../../services/api';
+import { useStateValue } from '../../../contexts/StateContext'; 
 
 export default () => {
 
@@ -51,8 +51,9 @@ export default () => {
             setDistrict(result.address.district);
             setCity(result.address.city);
             setState(result.address.state);
-            setIdManager(result.manager_id)
-            setManager(result.manager);
+            setIdManager(result.manager_id);
+            setManager(result.manager?.name || "");
+
 
             setAccountNumber(result.bank.account_number);
             setBankNumber(result.bank.bank_number);
@@ -107,7 +108,7 @@ export default () => {
                 <C.SubTitleSubContainer>{idManager ?? 'Não Possui'}</C.SubTitleSubContainer>
 
                 <C.TitleSubContainer>Manager:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{manager ?? 'Não Possui'}</C.SubTitleSubContainer>
+                <C.SubTitleSubContainer>{manager ? manager : "Não Possui"}</C.SubTitleSubContainer>
             </C.SubContainer>
 
 

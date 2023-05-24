@@ -1,28 +1,46 @@
 import styled from "styled-components/native";
+import { Platform, StatusBar } from 'react-native';
+
+const isAndroid = Platform.OS === 'android';
 
 export default {
-    Container: styled.SafeAreaView`
+    Container: styled.ScrollView`
+        margin-top: ${isAndroid ? `${StatusBar.currentHeight}px` : 0};
         flex: 1;
-        padding: 20px;
-        background-color: #F5F6FA;
-        justify-content: center;
-    `,
-    Logo: styled.Image`
-        width: 250px;
-        height: 200px;
-        margin-left: auto;
-        margin-right: auto;
-        margin-bottom: 20px;
-    `,
-    Field: styled.TextInput`
-        border-width: 1px;
-        border-color: #CCC;
-        background-color: #FFF;
-        border-radius: 5px;
-        color: #000;
-        font-size: 15px;
         padding: 10px;
-        margin-bottom: 15px;
+        background-color: #F5F6FA;
+        margin-bottom: 25px;
+    `,
+    ContainerInitial: styled.View`
+        padding: 10px;
+        padding-bottom: 25px;
+        border-radius: 5px;
+    `,
+    TitleInitial: styled.Text`
+        color: #000;
+        font-size: 25px;
+        font-weight: bold;
+    `,
+    ContainerButton: styled.TouchableOpacity`
+        background-color: #EBECF0;
+        margin-bottom: 12px;
+        border: 1px solid #a9a9a9;
+        padding: 10px
+    `,
+    TitleSubContainer: styled.Text`
+        color: #000;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 3px;
+    `,
+    SubTitleSubContainer: styled.Text`
+        color: #000;
+        font-size: 21px;
+        font-weight: bold;
+    `,
+    InformativeText: styled.Text`
+        color: #000;
+        font-size: 13px;
     `,
     ButtonArea: styled.TouchableOpacity`
         background-color: #000;
