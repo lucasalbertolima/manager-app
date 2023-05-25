@@ -8,7 +8,7 @@ export default {
         margin-top: ${isAndroid ? `${StatusBar.currentHeight}px` : 0};
         flex: 1;
         padding: 10px;
-        background-color: #F5F6FA;
+        background-color: #FFF;
         margin-bottom: 25px;
     `,
     ContainerInitial: styled.View`

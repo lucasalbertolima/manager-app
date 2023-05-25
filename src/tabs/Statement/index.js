@@ -32,37 +32,37 @@ export default () => {
             </C.ContainerInitial>
 
 
-            <C.ContainerButton onPress={null}>
+            <C.ContainerButton onPress={() => navigation.navigate('HistoricTableScreen')}>
                     <C.TitleSubContainer>Histórico</C.TitleSubContainer>
                     <C.InformativeText>Clique para ver mais</C.InformativeText>
             </C.ContainerButton>
 
-            <C.ContainerButton onPress={null}>
+            <C.ContainerButton onPress={() => navigation.navigate('DepositsTableScreen')}>
                     <C.TitleSubContainer>Depósitos</C.TitleSubContainer>
                     <C.InformativeText>Clique para ver mais</C.InformativeText>
             </C.ContainerButton>
 
-            <C.ContainerButton onPress={null}>
+            <C.ContainerButton onPress={() => navigation.navigate('WithdrawsTableScreen')}>
                     <C.TitleSubContainer>Saques</C.TitleSubContainer>
                     <C.InformativeText>Clique para ver mais</C.InformativeText>
             </C.ContainerButton>
 
-            <C.ContainerButton onPress={null}>
+            <C.ContainerButton onPress={() => navigation.navigate('InvestmentsTableScreen')}>
                     <C.TitleSubContainer>Investimentos</C.TitleSubContainer>
                     <C.InformativeText>Clique para ver mais</C.InformativeText>
             </C.ContainerButton>
 
-            <C.ContainerButton onPress={null}>
+            <C.ContainerButton onPress={() => navigation.navigate('RescuesTableScreen')}>
                     <C.TitleSubContainer>Resgates</C.TitleSubContainer>
                     <C.InformativeText>Clique para ver mais</C.InformativeText>
             </C.ContainerButton>
 
-            <C.ContainerButton onPress={null}>
+            <C.ContainerButton onPress={() => navigation.navigate('InternalTransfersTableScreen')}>
                     <C.TitleSubContainer>Tranferências Internas</C.TitleSubContainer>
                     <C.InformativeText>Clique para ver mais</C.InformativeText>
             </C.ContainerButton>
 
-            <C.ContainerButton onPress={null}>
+            <C.ContainerButton onPress={() => navigation.navigate('CdiTableScreen')}>
                     <C.TitleSubContainer>CDI</C.TitleSubContainer>
                     <C.InformativeText>Clique para ver mais</C.InformativeText>
             </C.ContainerButton>

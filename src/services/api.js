@@ -57,6 +57,42 @@ export default {
         return json;
     },
 
+    getConfig: async () => {
+        let token = await AsyncStorage.getItem('token');
+        let json = await request('get', '/account/config', {}, token);
+        return json;
+    },
+
+    getCdiHistoric: async () => {
+        let token = await AsyncStorage.getItem('token');
+        let json = await request('get', '/account/cdi-gains', {}, token);
+        return json;
+    },
+
+    getDepositsHistoric: async () => {
+        let token = await AsyncStorage.getItem('token');
+        let json = await request('get', '/trade/deposit-requests?index=0&length=&order_by=created_at&type=all&asc=desc&date_start=&date_end=', {}, token);
+        return json;
+    },
+
+    getHistoric: async () => {
+        let token = await AsyncStorage.getItem('token');
+        let json = await request('get', '/trade/transactions?index=0&length=&order_by=created_at&type=all&asc=desc&date_start=&date_end=', {}, token);
+        return json;
+    },
+
+    getRescuesHistoric: async () => {
+        let token = await AsyncStorage.getItem('token');
+        let json = await request('get', '/trade/rescues?index=0&length=&order_by=created_at&type=all&asc=desc&date_start=&date_end=', {}, token);
+        return json;
+    },
+
+    getWithdrawsHistoric: async () => {
+        let token = await AsyncStorage.getItem('token');
+        let json = await request('get', '/trade/withdraw-requests?index=0&length=&order_by=created_at&type=all&asc=desc&date_start=&date_end=', {}, token);
+        return json;
+    },
+
     logout: async () => {
         await AsyncStorage.removeItem('token');
     },

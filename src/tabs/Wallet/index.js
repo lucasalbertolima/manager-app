@@ -32,27 +32,27 @@ export default () => {
             </C.ContainerInitial>
 
 
-            <C.ContainerButton onPress={null}>
+            <C.ContainerButton onPress={() => navigation.navigate('DepositScreen')}>
                     <C.TitleSubContainer>Depositar</C.TitleSubContainer>
                     <C.InformativeText>Clique para realizar depósito</C.InformativeText>
             </C.ContainerButton>
 
-            <C.ContainerButton onPress={null}>
+            <C.ContainerButton onPress={() => navigation.navigate('WithdrawScreen')}>
                     <C.TitleSubContainer>Sacar</C.TitleSubContainer>
                     <C.InformativeText>Clique para realizar saque</C.InformativeText>
             </C.ContainerButton>
 
-            <C.ContainerButton onPress={null}>
+            <C.ContainerButton onPress={() => navigation.navigate('InvestmentScreen')}>
                     <C.TitleSubContainer>Investir</C.TitleSubContainer>
                     <C.InformativeText>Clique para realizar um investimento</C.InformativeText>
             </C.ContainerButton>
 
-            <C.ContainerButton onPress={null}>
+            <C.ContainerButton onPress={() => navigation.navigate('RescueScreen')}>
                     <C.TitleSubContainer>Resgatar</C.TitleSubContainer>
                     <C.InformativeText>Clique para realizar um resgate</C.InformativeText>
             </C.ContainerButton>
 
-            <C.ContainerButton onPress={null}>
+            <C.ContainerButton onPress={() => navigation.navigate('InternalTransferScreen')}>
                     <C.TitleSubContainer>Transferência Interna</C.TitleSubContainer>
                     <C.InformativeText>Clique para realizar uma transferência interna</C.InformativeText>
             </C.ContainerButton>

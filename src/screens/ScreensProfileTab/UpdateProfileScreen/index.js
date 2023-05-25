@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import { useNavigation } from "@react-navigation/native";
 import C from './style';
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { format, parseISO } from 'date-fns';
 
 
 import api from '../../../services/api';
@@ -80,8 +80,6 @@ export default () => {
         }
 
     }
-
-    
 
     return (
         <C.Container>
