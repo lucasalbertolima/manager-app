@@ -57,6 +57,12 @@ export default {
         return json;
     },
 
+    postAutoReinvest: async (data) => {
+        let token = await AsyncStorage.getItem('token');
+        let json = await request('post', '/account/auto-reinvestment', data, token);
+        return json;
+    },
+
     getConfig: async () => {
         let token = await AsyncStorage.getItem('token');
         let json = await request('get', '/account/config', {}, token);

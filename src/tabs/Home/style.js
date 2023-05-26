@@ -14,6 +14,12 @@ export default {
         padding: 10px;
         border-radius: 5px;
     `,
+    SubContainerSwitch: styled.View`
+        flex-direction: row;
+        margin-left: -10px;
+        justify-content: flex-start;
+        align-items: center;
+    `,
     TitleInitial: styled.Text`
         color: #3C3C3C;
         font-size: 25px;
@@ -40,9 +46,9 @@ export default {
     `,
     Balance: styled.Text`
         color: #3C3C3C;
-        font-size: 18px;
+        font-size: 17px;
         font-weight: bold;
-        margin-bottom: 7px;
+        margin-bottom: 4px;
     `,
     SubContainerFlex: styled.View`
         flex-direction: row;
