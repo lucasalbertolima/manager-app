@@ -108,14 +108,28 @@ export default {
         let json = await request('post', '/account/update-password', {newPassword, password}, token);
         return json;
     },
+
     updateProfile: async ( data ) => {
         let token = await AsyncStorage.getItem('token');
         let json = await request('post', '/account/update', data, token);
         return json;
     },
+
     updateBankAccount: async ( data ) => {
         let token = await AsyncStorage.getItem('token');
         let json = await request('post', '/account/bank-account', data, token);
+        return json;
+    },
+
+    requestNewWithdraw: async ( data ) => {
+        let token = await AsyncStorage.getItem('token');
+        let json = await request('post', '/trade/request-withdraw', data, token);
+        return json;
+    },
+
+    requestNewInternalTransfer: async ( data ) => {
+        let token = await AsyncStorage.getItem('token');
+        let json = await request('post', '/trade/internal-transfer?client_id=undefined', data, token);
         return json;
     }
     

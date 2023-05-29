@@ -28,12 +28,23 @@ export default () => {
 
     useEffect(()=>{
         getUser();
+        getConfig();
     }, []);
 
     const getUser = async () => {
         const result = await api.getUser();
         if(result && result.name) {
             setName(result.name);
+        }else{
+            alert(result.error);
+        }
+    }
+
+    const getConfig = async () => {
+        const result = await api.getConfig();
+        if(result) {
+            setMinWithdraw(result[1].value);
+            setMaxWithdraw(result[2].value)
         }else{
             alert(result.error);
         }

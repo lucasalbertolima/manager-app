@@ -1,7 +1,9 @@
 import React, {useState, useEffect} from "react";
 import { useNavigation } from "@react-navigation/native";
 import C from './style';
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import {formatCurrency} from '../../../functions'
+import { CheckBox } from 'react-native-elements';
+import { Modal, View, StyleSheet } from "react-native";
 
 
 import api from '../../../services/api';
@@ -12,120 +14,209 @@ export default () => {
     const navigation = useNavigation();
     const [context, dispatch] = useStateValue();
 
-    const [user, setUser] = useState();
-    const [cpf, setCpf] = useState();
-    const [email, setEmail] = useState();
-    const [dateOfBirth, setDateOfBirth] = useState();
-    const [phone, setPhone] = useState();
-    const [cep, setCep] = useState();
-    const [address, setAddress] = useState();
-    const [streetAddress, setStreetAddress] = useState();
-    const [country, setCountry] = useState();
-    const [district, setDistrict] = useState();
-    const [city, setCity] = useState();
-    const [state, setState] = useState();
-    const [idManager, setIdManager] = useState();
-    const [manager, setManager] = useState();
-    const [accountNumber, setAccountNumber] = useState();
-    const [bankNumber, setBankNumber] = useState();
-    const [branchNumber, setBranchNumber] = useState();
-    const [typeBank, setTypeBank] = useState();
-    const [variation, setVariation] = useState();
+    const [balanceAvailable, setBalanceAvailable] = useState(0);
+    const [balanceAvailableBrasil, setBalanceAvailableBrasil] = useState(0);
+    const [balanceAvailableExterior, setBalanceAvailableExterior] = useState(0);
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const [minWithdraw, setMinWithdraw] = useState(0);
+    const [maxWithdraw, setMaxWithdraw] = useState(0);
+
+    const [brasil, setBrasil] = useState(true);
+    const [exterior, setExterior] = useState(false);
+
+    const handleCheck = () => {
+        setBrasil(!brasil);
+        setExterior(!exterior);
+    };
+
+    const [amount, setAmount] = useState();
+
+    const cleanValue = (value) => {
+        // Verifica se a variável value é uma string vazia ou não está definida
+        if (!value || value === '') {
+          return 0; // Retorna zero como valor padrão
+        }
+      
+        // Remove os caracteres da máscara, como separadores de milhares, separadores decimais e unidades
+        const cleanAmount = value.replace(/[^0-9]/g, '');
+      
+        // Converte o valor para número
+        return Number(cleanAmount)/100;
+      };
+      
 
     useEffect(()=>{
         getUser();
+        getConfig();
     }, []);
 
     const getUser = async () => {
         const result = await api.getUser();
         if(result && result.name) {
-            setUser(result.name);
-            setCpf(result.cpf);
-            setEmail(result.email);
-            setDateOfBirth(result.date_of_birth);
-            setPhone(result.phone);
-            setCep(result.address.cep);
-            setAddress(result.address.line_1 + ' ' + result.address.number);
-            setStreetAddress(result.address.line_2);
-            setCountry(result.address.country);
-            setDistrict(result.address.district);
-            setCity(result.address.city);
-            setState(result.address.state);
-            setIdManager(result.manager_id);
-            setManager(result.manager?.name || "");
+            setBalanceAvailable(result.balance_available);
+            setBalanceAvailableBrasil(result.balances_available.Brasil);
+            setBalanceAvailableExterior(result.balances_available.Exterior);
 
-
-            setAccountNumber(result.bank.account_number);
-            setBankNumber(result.bank.bank_number);
-            setBranchNumber(result.bank.branch_number);
-            setTypeBank(result.bank.type);
-            setVariation(result.bank.variation);
         }else{
             alert(result.error);
         }
     }
 
+    const getConfig = async () => {
+        const result = await api.getConfig();
+        if(result) {
+            setMinWithdraw(result[1].value);
+            setMaxWithdraw(result[2].value)
+        }else{
+            alert(result.error);
+        }
+    }
+
+    const showModal = () => {
+        setModalVisible(!modalVisible);
+    }
+
+
+    const requestNewInternalTransfer = async () => {
+        if(amount) {
+            const from = brasil ? 'Brasil' : 'Exterior';
+            const to = brasil ? 'Exterior' : 'Brasil';
+            const cleanAmount = cleanValue(amount);
+            const data = {
+                amount: cleanAmount,
+                from: from,
+                to: to
+            };
+            let result = await api.requestNewInternalTransfer(data);
+            if(result.error){
+                alert(result.error);
+                showModal();
+            } else {
+                showModal();
+                alert("Transferência Interna Solicita com Sucesso");
+            } 
+        } else {
+            alert("Preencha os campos corretamente");
+            showModal();
+        }
+
+    }
+
     return (
         <C.Container>
-            <C.SubContainer>
-                <C.TitleSubContainer>Nome Completo:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{user}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>E-mail:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{email}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>Cpf / Passport:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{cpf}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>Data de Nascimento / Birth Date:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{dateOfBirth}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>Telefone / Phone Number:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{phone}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>Cep / Postal Code:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{cep}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>Endereço / Address:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{address}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>Complemento / Street Address Line 2:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{streetAddress}</C.SubTitleSubContainer>
-            
-                <C.TitleSubContainer>País / Country:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{country}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>Bairro / District:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{district}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>Cidade / City:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{city}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>Estado / State:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{state}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>Id do Manager:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{idManager ?? 'Não Possui'}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>Manager:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{manager ? manager : "Não Possui"}</C.SubTitleSubContainer>
-            </C.SubContainer>
-
 
             <C.SubContainer>
-                <C.TitleSubContainer>Dados Bancários</C.TitleSubContainer>
-                <C.SubTitleSubContainer>Banco / Bank:</C.SubTitleSubContainer>
-                <C.Balance>{bankNumber}</C.Balance>
-                <C.SubTitleSubContainer>Agência / Branch:</C.SubTitleSubContainer>
-                <C.Balance>{branchNumber}</C.Balance>
-                <C.SubTitleSubContainer>Conta / Account: </C.SubTitleSubContainer>
-                <C.Balance>{accountNumber}</C.Balance>
-                <C.SubTitleSubContainer>Tipo / Type:</C.SubTitleSubContainer>
-                <C.Balance>{typeBank === 1 ? "Conta Corrente" : "Conta Poupança"}</C.Balance>
-                <C.SubTitleSubContainer>Variação:</C.SubTitleSubContainer>
-                <C.Balance>{variation}</C.Balance>
+                
+                    <C.Balance>Saldo Total Disponível: {formatCurrency(balanceAvailable)}</C.Balance>
+                    <C.Balance>Saldo Brasil: {formatCurrency(balanceAvailableBrasil)}</C.Balance>
+                    <C.Balance>Saque Exterior: {formatCurrency(balanceAvailableExterior)}</C.Balance>
+                    <C.Balance>Processamento em até {brasil ? '3' : '10'} dias úteis{'\n'}</C.Balance>
+                
+                <C.TitleSubContainer>Solicitar Transferência Interna do:</C.TitleSubContainer>
+
+                <View style={{
+                    backgroundColor: '#EBECF0',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: 15}}>
+                <CheckBox
+                    containerStyle={{ backgroundColor: '#EBECF0' }}
+                    title='Brasil para Exterior'
+                    checked={brasil}
+                    onPress={handleCheck}
+                />
+                <CheckBox
+                    containerStyle={{ backgroundColor: '#EBECF0' }}
+                    title='Exterior para Brasil'
+                    checked={exterior}
+                    onPress={handleCheck}
+                />
+                </View>
+
+                <C.TextInputContainer
+                    type={'money'}
+                    options={{
+                        precision: 2,
+                        separator: ',',
+                        delimiter: '.',
+                        unit: '',
+                        suffixUnit: '',
+                    }}
+                    placeholder="Insira o valor em R$ aqui"
+                    value={amount}
+                    onChangeText={(t) => {setAmount(t)}}
+                />
+
+                <C.ButtonArea onPress={showModal}>
+                    <C.ButtonText>Solicitar Transferência Interna</C.ButtonText>
+                </C.ButtonArea>
+
+                <Modal
+                    visible={modalVisible}
+                    animationType="slide"
+                    style={styles.modalContainer}
+                >
+                    {brasil && (
+                    <View style={styles.viewModalContainer}>
+                            <C.TitleSubContainer style={{textAlign: 'center'}} >Você tem certeza que deseja transferir R$ {amount ? amount : '0,00'} do Brasil para o Exterior? {'\n'}
+                            </C.TitleSubContainer>
+                            
+                            <C.TitleSubContainer style={{textAlign: 'center'}}>
+                            O tempo de transferência será de até 3 dias úteis.
+                            </C.TitleSubContainer>
+
+                            <C.ButtonArea style={{backgroundColor: '#008000'}} onPress={requestNewInternalTransfer}>
+                                <C.ButtonText>CONFIRMAR</C.ButtonText>
+                            </C.ButtonArea>
+
+                            <C.ButtonArea style={{backgroundColor: '#FF0000'}} onPress={showModal}>
+                                <C.ButtonText>CANCELAR</C.ButtonText>
+                            </C.ButtonArea>
+                    </View>
+                     )}
+
+                    {!brasil && (
+                            <View style={styles.viewModalContainer}>
+                            <C.TitleSubContainer style={{textAlign: 'center'}} >Você tem certeza que deseja transferir R$ {amount ? amount : '0,00'} do Exterior para o Brasil? {'\n'}
+                            </C.TitleSubContainer>
+                            
+                            <C.TitleSubContainer style={{textAlign: 'center'}}>
+                            O tempo de transferência será de até 10 dias úteis.
+                            </C.TitleSubContainer>
+
+                            <C.ButtonArea style={{backgroundColor: '#008000'}} onPress={requestNewInternalTransfer}>
+                                <C.ButtonText>CONFIRMAR</C.ButtonText>
+                            </C.ButtonArea>
+
+                            <C.ButtonArea style={{backgroundColor: '#FF0000'}} onPress={showModal}>
+                                <C.ButtonText>CANCELAR</C.ButtonText>
+                            </C.ButtonArea>
+                    </View>
+                     )}
+                </Modal>
+
             </C.SubContainer>
+
         </C.Container>
+
+        
     );
 
 }
+
+const styles = StyleSheet.create({
+    modalContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(200, 200, 200, 0.5)',
+    },
+    viewModalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 10,
+        backgroundColor: 'rgba(200, 200, 200, 0.5)',
+      },
+  });

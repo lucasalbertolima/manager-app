@@ -35,7 +35,21 @@ export default () => {
         setExterior(!exterior);
     };
 
-    const [amount, setAmount] = useState("");
+    const [amount, setAmount] = useState();
+
+    const cleanValue = (value) => {
+        // Verifica se a variável value é uma string vazia ou não está definida
+        if (!value || value === '') {
+          return 0; // Retorna zero como valor padrão
+        }
+      
+        // Remove os caracteres da máscara, como separadores de milhares, separadores decimais e unidades
+        const cleanAmount = value.replace(/[^0-9]/g, '');
+      
+        // Converte o valor para número
+        return Number(cleanAmount)/100;
+      };
+      
 
     useEffect(()=>{
         getUser();
@@ -69,6 +83,26 @@ export default () => {
         }else{
             alert(result.error);
         }
+    }
+
+    const requestNewWithdraw = async () => {
+        if(amount) {
+            const region = brasil ? 'Brasil' : 'Exterior';
+            const cleanAmount = cleanValue(amount);
+            const data = {
+                amount: cleanAmount,
+                region: region
+            };
+            let result = await api.requestNewWithdraw(data);
+            if(result.error){
+                alert(result.error);
+            } else {
+                alert("Deu tudo certo");
+            } 
+        } else {
+            alert("Preencha os campos corretamente");
+        }
+
     }
 
     return (
@@ -156,12 +190,10 @@ export default () => {
                     }}
                     placeholder="Insira o valor em R$ aqui"
                     value={amount}
-                    onChangeText={(t) => {
-                        setAmount(t);
-                    }}
+                    onChangeText={(t) => {setAmount(t)}}
                 />
 
-                <C.ButtonArea onPress={null}>
+                <C.ButtonArea onPress={requestNewWithdraw}>
                     <C.ButtonText>Solicitar Saque</C.ButtonText>
                 </C.ButtonArea>
 
