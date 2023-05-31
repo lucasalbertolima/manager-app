@@ -110,8 +110,7 @@ export default () => {
                 
                     <C.Balance>Saldo Total Disponível: {formatCurrency(balanceAvailable)}</C.Balance>
                     <C.Balance>Saldo Brasil: {formatCurrency(balanceAvailableBrasil)}</C.Balance>
-                    <C.Balance>Saque Exterior: {formatCurrency(balanceAvailableExterior)}</C.Balance>
-                    <C.Balance>Processamento em até {brasil ? '3' : '10'} dias úteis{'\n'}</C.Balance>
+                    <C.Balance>Saldo Exterior: {formatCurrency(balanceAvailableExterior)}</C.Balance>
                 
                 <C.TitleSubContainer>Solicitar Transferência Interna do:</C.TitleSubContainer>
 

@@ -12,25 +12,28 @@ export default () => {
     const navigation = useNavigation();
     const [context, dispatch] = useStateValue();
 
-    const [user, setUser] = useState();
-    const [cpf, setCpf] = useState();
-    const [email, setEmail] = useState();
-    const [dateOfBirth, setDateOfBirth] = useState();
-    const [phone, setPhone] = useState();
-    const [cep, setCep] = useState();
-    const [address, setAddress] = useState();
-    const [streetAddress, setStreetAddress] = useState();
-    const [country, setCountry] = useState();
-    const [district, setDistrict] = useState();
-    const [city, setCity] = useState();
+    const [user, setUser] = useState('');
+    const [cpf, setCpf] = useState('');
+    const [email, setEmail] = useState('');
+    const [dateOfBirth, setDateOfBirth] = useState('');
+    const [phone, setPhone] = useState('');
+    const [cep, setCep] = useState('');
+    const [address, setAddress] = useState('');
+    const [streetAddress, setStreetAddress] = useState('');
+    const [country, setCountry] = useState('');
+    const [district, setDistrict] = useState('');
+    const [city, setCity] = useState('');
     const [state, setState] = useState();
-    const [idManager, setIdManager] = useState();
-    const [manager, setManager] = useState();
-    const [accountNumber, setAccountNumber] = useState();
-    const [bankNumber, setBankNumber] = useState();
-    const [branchNumber, setBranchNumber] = useState();
-    const [typeBank, setTypeBank] = useState();
-    const [variation, setVariation] = useState();
+    const [idManager, setIdManager] = useState('');
+    const [manager, setManager] = useState('');
+    const [accountNumber, setAccountNumber] = useState('');
+    const [bankNumber, setBankNumber] = useState('');
+    const [branchNumber, setBranchNumber] = useState('');
+    const [typeBank, setTypeBank] = useState('');
+    const [variation, setVariation] = useState('');
+
+    const partesDate = dateOfBirth.split("-");
+    const dateOfBirthFormatted = `${partesDate[2]}/${partesDate[1]}/${partesDate[0]}`;
 
     useEffect(()=>{
         getUser();
@@ -78,7 +81,7 @@ export default () => {
                 <C.SubTitleSubContainer>{cpf}</C.SubTitleSubContainer>
 
                 <C.TitleSubContainer>Data de Nascimento / Birth Date:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{dateOfBirth}</C.SubTitleSubContainer>
+                <C.SubTitleSubContainer>{dateOfBirthFormatted === 'undefined-undefined-' ? '' : dateOfBirthFormatted}</C.SubTitleSubContainer>
 
                 <C.TitleSubContainer>Telefone / Phone Number:</C.TitleSubContainer>
                 <C.SubTitleSubContainer>{phone}</C.SubTitleSubContainer>

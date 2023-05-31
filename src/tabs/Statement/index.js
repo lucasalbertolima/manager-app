@@ -62,10 +62,16 @@ export default () => {
                     <C.InformativeText>Clique para ver mais</C.InformativeText>
             </C.ContainerButton>
 
+            <C.ContainerButton onPress={() => navigation.navigate('QuotaTableScreen')}>
+                    <C.TitleSubContainer>Histórico da Cota</C.TitleSubContainer>
+                    <C.InformativeText>Clique para ver mais</C.InformativeText>
+            </C.ContainerButton>
+
             <C.ContainerButton onPress={() => navigation.navigate('CdiTableScreen')}>
                     <C.TitleSubContainer>CDI</C.TitleSubContainer>
                     <C.InformativeText>Clique para ver mais</C.InformativeText>
             </C.ContainerButton>
+
 
         </C.Container>
     );

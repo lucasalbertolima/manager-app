@@ -1,12 +1,13 @@
 import React, {useState, useEffect} from "react";
 import { useNavigation } from "@react-navigation/native";
 import C from './style';
-import { formatCurrency } from '../../functions'
-
+import { formatCurrency } from '../../functions';
+import { LineChart, Grid } from 'react-native-svg-charts';
 
 import api from '../../services/api';
 import { useStateValue } from '../../contexts/StateContext'; 
 import { Switch } from "react-native";
+import { View } from "react-native";
 
 export default () => {
 
@@ -19,6 +20,8 @@ export default () => {
     const [balanceAvailableExterior, setBalanceAvailableExterior] = useState()
     const [autoReinvestment, setAutoReinvestment] = useState();
     const [showAmounts, setShowAmounts] = useState(false);
+
+    const data = [50, 10, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50, -20, -80]
 
     useEffect(()=>{
         getUser();
@@ -56,11 +59,12 @@ export default () => {
         }
     }
 
+
     return (
         <C.Container>
             
             <C.ContainerInitial>
-                <C.TitleInitial>Olá, {nameUser}</C.TitleInitial>
+                <C.TitleInitial>Olá, {nameUser?.split(' ')[0]}</C.TitleInitial>
             </C.ContainerInitial>
             
             <C.SubContainer>
@@ -124,7 +128,17 @@ export default () => {
                 <C.SubTitleSubContainer>Saldo Disponível no Exterior</C.SubTitleSubContainer>
                 <C.Balance>{showAmounts ? `${formatCurrency(balanceAvailableExterior)}` : '****'}</C.Balance>
             </C.SubContainer>
-            
+            <View style={{marginBottom: 40}}>
+            <C.TitleSubContainer>Rendimentos de USD:</C.TitleSubContainer>
+                <LineChart
+                    style={{ height: 200 }}
+                    data={data}
+                    svg={{ stroke: 'rgb(134, 65, 244)' }}
+                    contentInset={{ top: 20, bottom: 20 }}
+                >
+                    <Grid />
+                </LineChart>
+            </View>
         </C.Container>
     );
 

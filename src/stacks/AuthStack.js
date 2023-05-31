@@ -13,6 +13,7 @@ import HistoricTableScreen from "../screens/ScreensStatementTab/HistoricTableScr
 import InternalTransfersTableScreen from "../screens/ScreensStatementTab/InternalTransfersTableScreen";
 import InvestmentsTableScreen from "../screens/ScreensStatementTab/InvestmentsTableScreen";
 import RescuesTableScreen from "../screens/ScreensStatementTab/RescuesTableScreen";
+import QuotaTableScreen from "../screens/ScreensStatementTab/QuotaTableScreen";
 import WithdrawsTableScreen from "../screens/ScreensStatementTab/WithdrawsTableScreen";
 
 
@@ -93,6 +94,13 @@ export default () => {
                 component={RescuesTableScreen}
                 options={{
                     title: 'Extrato - Resgates'
+                }}
+            />   
+            <Stack.Screen
+                name="QuotaTableScreen"
+                component={QuotaTableScreen}
+                options={{
+                    title: 'Extrato - Histórico da Cota'
                 }}
             />   
             <Stack.Screen

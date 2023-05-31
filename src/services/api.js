@@ -2,6 +2,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const baseUrl = 'https://api.managertrading.com';
 
+const dataAtual = new Date();
+const year = dataAtual.getFullYear();
+const month = dataAtual.getMonth() + 1;
+
+
 const request = async (method, endpoint, params, token = null) => {
     method = method.toLowerCase();
     let fullUrl = `${baseUrl}${endpoint}`;
@@ -72,6 +77,12 @@ export default {
     getCdiHistoric: async () => {
         let token = await AsyncStorage.getItem('token');
         let json = await request('get', '/account/cdi-gains', {}, token);
+        return json;
+    },
+
+    getQuotaHistoric: async (chosenSymbol) => {
+        let token = await AsyncStorage.getItem('token');
+        let json = await request('get', `/trade/incomes?index=0&length=31&order_by=date&symbol=${chosenSymbol}&asc=1&date_start=${year}-${month}-01&date_end=${year}-${month}-31`, {}, token);
         return json;
     },
 
@@ -154,8 +165,7 @@ export default {
     requestNewDepositImage: async (transferId, imageData) => {
         let token = await AsyncStorage.getItem('token');
         let json = await request('post', `/trade/send-receipt?transfer_id=${transferId}&client_id=`, imageData, token);
-        return json;
-        
+        return json; 
       }
       
     
