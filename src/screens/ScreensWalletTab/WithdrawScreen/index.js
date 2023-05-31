@@ -97,7 +97,7 @@ export default () => {
             if(result.error){
                 alert(result.error);
             } else {
-                alert("Deu tudo certo");
+                alert("Solicitação de saque realizada com sucesso!");
             } 
         } else {
             alert("Preencha os campos corretamente");

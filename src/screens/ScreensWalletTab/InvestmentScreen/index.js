@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from "react";
 import { useNavigation } from "@react-navigation/native";
 import C from './style';
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import {formatCurrency} from '../../../functions'
+import {Picker} from '@react-native-picker/picker';
 
 
 import api from '../../../services/api';
@@ -12,120 +13,163 @@ export default () => {
     const navigation = useNavigation();
     const [context, dispatch] = useStateValue();
 
-    const [user, setUser] = useState();
-    const [cpf, setCpf] = useState();
-    const [email, setEmail] = useState();
-    const [dateOfBirth, setDateOfBirth] = useState();
-    const [phone, setPhone] = useState();
-    const [cep, setCep] = useState();
-    const [address, setAddress] = useState();
-    const [streetAddress, setStreetAddress] = useState();
-    const [country, setCountry] = useState();
-    const [district, setDistrict] = useState();
-    const [city, setCity] = useState();
-    const [state, setState] = useState();
-    const [idManager, setIdManager] = useState();
-    const [manager, setManager] = useState();
-    const [accountNumber, setAccountNumber] = useState();
-    const [bankNumber, setBankNumber] = useState();
-    const [branchNumber, setBranchNumber] = useState();
-    const [typeBank, setTypeBank] = useState();
-    const [variation, setVariation] = useState();
+    const [balanceAvailableBrasil, setBalanceAvailableBrasil] = useState(0);
+    const [balanceAvailableExterior, setBalanceAvailableExterior] = useState(0);
+
+    const [symbols, setSymbols] = useState([]);
+    const [chosenSymbol, setChosenSymbol] = useState();
+
+    const [amount, setAmount] = useState();
+
+      
 
     useEffect(()=>{
         getUser();
+        getSymbols();
     }, []);
 
     const getUser = async () => {
         const result = await api.getUser();
         if(result && result.name) {
-            setUser(result.name);
-            setCpf(result.cpf);
-            setEmail(result.email);
-            setDateOfBirth(result.date_of_birth);
-            setPhone(result.phone);
-            setCep(result.address.cep);
-            setAddress(result.address.line_1 + ' ' + result.address.number);
-            setStreetAddress(result.address.line_2);
-            setCountry(result.address.country);
-            setDistrict(result.address.district);
-            setCity(result.address.city);
-            setState(result.address.state);
-            setIdManager(result.manager_id);
-            setManager(result.manager?.name || "");
+            setBalanceAvailableBrasil(result.balances_available.Brasil);
+            setBalanceAvailableExterior(result.balances_available.Exterior);
 
-
-            setAccountNumber(result.bank.account_number);
-            setBankNumber(result.bank.bank_number);
-            setBranchNumber(result.bank.branch_number);
-            setTypeBank(result.bank.type);
-            setVariation(result.bank.variation);
         }else{
             alert(result.error);
         }
     }
 
+    const getSymbols = async () => {
+        const result = await api.getSymbols();
+        if(result) {
+            setSymbols(result);
+            setChosenSymbol(result[0].id);
+        }else{
+            alert(result.error);
+        }
+    }
+
+    const cleanValue = (value) => {
+        // Verifica se a variável value é uma string vazia ou não está definida
+        if (!value || value === '') {
+          return 0; // Retorna zero como valor padrão
+        }
+      
+        // Remove os caracteres da máscara, como separadores de milhares, separadores decimais e unidades
+        const cleanAmount = value.replace(/[^0-9]/g, '');
+      
+        // Converte o valor para número
+        return Number(cleanAmount)/100;
+      };
+
+
+    const requestNewInvestiment = async () => {
+        if(amount && chosenSymbol) {
+            const cleanAmount = cleanValue(amount);
+            const data = {
+                amount: cleanAmount,
+                client_id: "",
+                symbol: chosenSymbol
+            };
+            let result = await api.requestNewInvestiment(data);
+            if(result.error){
+                alert(result.error);
+
+            } else {
+                alert("Transferência Interna Solicita com Sucesso");
+            } 
+        } else {
+            alert("Preencha os campos corretamente");
+        }
+
+    }
+
     return (
         <C.Container>
+
             <C.SubContainer>
-                <C.TitleSubContainer>Nome Completo:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{user}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>E-mail:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{email}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>Cpf / Passport:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{cpf}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>Data de Nascimento / Birth Date:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{dateOfBirth}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>Telefone / Phone Number:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{phone}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>Cep / Postal Code:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{cep}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>Endereço / Address:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{address}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>Complemento / Street Address Line 2:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{streetAddress}</C.SubTitleSubContainer>
+            {symbols[0] && (
+            <>
             
-                <C.TitleSubContainer>País / Country:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{country}</C.SubTitleSubContainer>
+            <C.TitleSubContainer>Selecione o produto:</C.TitleSubContainer>
+                <Picker
+                    style={{backgroundColor: "#FFF",
+                    borderWidth: 10,
+                    borderStyle: "solid",
+                    borderColor: "#000",
+                    marginBottom: 5,
+                    marginTop: 5}}
+                    selectedValue={chosenSymbol}
+                    onValueChange={(itemValue, itemIndex) =>
+                        setChosenSymbol(itemValue)
+                    }>
+                    <Picker.Item label={symbols[0]?.symbol} value= {symbols[0].id} />
+                    <Picker.Item label={symbols[1]?.symbol} value= {symbols[1].id} />
+                    <Picker.Item label={symbols[2]?.symbol} value= {symbols[2].id} />
+                    <Picker.Item label={symbols[3]?.symbol} value= {symbols[3].id} />
+                    <Picker.Item label={symbols[4]?.symbol} value= {symbols[4].id} />
+                </Picker>
+                
 
-                <C.TitleSubContainer>Bairro / District:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{district}</C.SubTitleSubContainer>
+                    <C.TitleSubContainer>Informações:</C.TitleSubContainer>
+                    <C.Balance>Valor do Produto:{' '} 
+                        {chosenSymbol == symbols[0].id ? formatCurrency(symbols[0].quota)
+                         : chosenSymbol == symbols[1].id ? formatCurrency(symbols[1].quota)
+                         : chosenSymbol == symbols[2].id ? formatCurrency(symbols[2].quota)
+                         : chosenSymbol == symbols[3].id ? formatCurrency(symbols[3].quota)
+                         : chosenSymbol == symbols[4].id ? formatCurrency(symbols[4].quota)
+                         : ''}</C.Balance>
+                    <C.Balance>Investimento Mínimo:{' '}  
+                        {chosenSymbol == symbols[0].id ? formatCurrency(symbols[0].minimum_investment)
+                         : chosenSymbol == symbols[1].id ? formatCurrency(symbols[1].minimum_investment)
+                         : chosenSymbol == symbols[2].id ? formatCurrency(symbols[2].minimum_investment)
+                         : chosenSymbol == symbols[3].id ? formatCurrency(symbols[3].minimum_investment)
+                         : chosenSymbol == symbols[4].id ? formatCurrency(symbols[4].minimum_investment)
+                         : ''}
+                    </C.Balance>
+                    <C.Balance>Seu Saldo Disponível:{' '}
+                        {chosenSymbol === symbols[0].id ? formatCurrency(balanceAvailableBrasil)
+                         : formatCurrency(balanceAvailableExterior)}
+                    </C.Balance>
+                    <C.Balance>Produto Escolhido:{' '}
+                        {chosenSymbol == symbols[0].id ? symbols[0].symbol
+                         : chosenSymbol == symbols[1].id ? symbols[1].symbol
+                         : chosenSymbol == symbols[2].id ? symbols[2].symbol
+                         : chosenSymbol == symbols[3].id ? symbols[3].symbol
+                         : chosenSymbol == symbols[4].id ? symbols[4].symbol
+                         : 'R$ 0,00'}
+                    </C.Balance>
 
-                <C.TitleSubContainer>Cidade / City:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{city}</C.SubTitleSubContainer>
+                    <C.TitleSubContainer>Seu Investimento:</C.TitleSubContainer>
+                    <C.Balance>Cotas: {formatCurrency(balanceAvailableExterior)}</C.Balance>
+                    <C.Balance>Valor Total: {formatCurrency(balanceAvailableExterior)}</C.Balance>
+                
+                    </>
+                )}
 
-                <C.TitleSubContainer>Estado / State:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{state}</C.SubTitleSubContainer>
+                <C.TextInputContainer
+                    type={'money'}
+                    options={{
+                        precision: 2,
+                        separator: ',',
+                        delimiter: '.',
+                        unit: '',
+                        suffixUnit: '',
+                    }}
+                    placeholder="Insira o valor em R$ aqui"
+                    value={amount}
+                    onChangeText={(t) => {setAmount(t)}}
+                />
 
-                <C.TitleSubContainer>Id do Manager:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{idManager ?? 'Não Possui'}</C.SubTitleSubContainer>
+                <C.ButtonArea onPress={requestNewInvestiment}>
+                    <C.ButtonText>Investir</C.ButtonText>
+                </C.ButtonArea>
 
-                <C.TitleSubContainer>Manager:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{manager ? manager : "Não Possui"}</C.SubTitleSubContainer>
             </C.SubContainer>
 
-
-            <C.SubContainer>
-                <C.TitleSubContainer>Dados Bancários</C.TitleSubContainer>
-                <C.SubTitleSubContainer>Banco / Bank:</C.SubTitleSubContainer>
-                <C.Balance>{bankNumber}</C.Balance>
-                <C.SubTitleSubContainer>Agência / Branch:</C.SubTitleSubContainer>
-                <C.Balance>{branchNumber}</C.Balance>
-                <C.SubTitleSubContainer>Conta / Account: </C.SubTitleSubContainer>
-                <C.Balance>{accountNumber}</C.Balance>
-                <C.SubTitleSubContainer>Tipo / Type:</C.SubTitleSubContainer>
-                <C.Balance>{typeBank === 1 ? "Conta Corrente" : "Conta Poupança"}</C.Balance>
-                <C.SubTitleSubContainer>Variação:</C.SubTitleSubContainer>
-                <C.Balance>{variation}</C.Balance>
-            </C.SubContainer>
         </C.Container>
+
+        
     );
 
 }
