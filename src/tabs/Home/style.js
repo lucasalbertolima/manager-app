@@ -33,6 +33,16 @@ export default {
         border: 1px solid #a9a9a9;
         margin-bottom: 12px;
     `,
+    SubContainerGraph: styled.View`
+        background-color: #FFF;
+        padding-left: -10px;
+        padding-top: 15px;
+        border-radius: 3px;
+        border-bottom: 1px solid #a9a9a9;
+        border-top: 1px solid #a9a9a9;
+        margin-bottom: 12px;
+    `,
+
     TitleSubContainer: styled.Text`
         color: #3C3C3C;
         font-size: 24px;

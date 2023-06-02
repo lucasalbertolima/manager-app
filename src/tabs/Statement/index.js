@@ -33,7 +33,7 @@ export default () => {
 
 
             <C.ContainerButton onPress={() => navigation.navigate('HistoricTableScreen')}>
-                    <C.TitleSubContainer>Histórico</C.TitleSubContainer>
+                    <C.TitleSubContainer>Últimas Transações</C.TitleSubContainer>
                     <C.InformativeText>Clique para ver mais</C.InformativeText>
             </C.ContainerButton>
 

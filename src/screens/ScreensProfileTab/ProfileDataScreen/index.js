@@ -81,7 +81,7 @@ export default () => {
                 <C.SubTitleSubContainer>{cpf}</C.SubTitleSubContainer>
 
                 <C.TitleSubContainer>Data de Nascimento / Birth Date:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{dateOfBirthFormatted === 'undefined-undefined-' ? '' : dateOfBirthFormatted}</C.SubTitleSubContainer>
+                <C.SubTitleSubContainer>{dateOfBirthFormatted === 'undefined/undefined/' ? '' : dateOfBirthFormatted}</C.SubTitleSubContainer>
 
                 <C.TitleSubContainer>Telefone / Phone Number:</C.TitleSubContainer>
                 <C.SubTitleSubContainer>{phone}</C.SubTitleSubContainer>

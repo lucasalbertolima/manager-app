@@ -82,7 +82,13 @@ export default {
 
     getQuotaHistoric: async (chosenSymbol) => {
         let token = await AsyncStorage.getItem('token');
-        let json = await request('get', `/trade/incomes?index=0&length=31&order_by=date&symbol=${chosenSymbol}&asc=1&date_start=${year}-${month}-01&date_end=${year}-${month}-31`, {}, token);
+        let json = await request('get', `/trade/incomes?index=0&length=31&order_by=date&symbol=${chosenSymbol}&asc=1&date_start=${year}-${month-1}-01&date_end=${year}-${month-1}-31`, {}, token);
+        return json;
+    },
+
+    getInternalTransfersHistoric: async () => {
+        let token = await AsyncStorage.getItem('token');
+        let json = await request('get', '/trade/internal-transfers?index=0&length=&order_by=created_at&type=all&asc=desc&date_start=&date_end=&client_id=', {}, token);
         return json;
     },
 
@@ -118,6 +124,7 @@ export default {
 
     logout: async () => {
         await AsyncStorage.removeItem('token');
+        return;
     },
 
     updatePassword: async (newPassword, password) => {
@@ -162,9 +169,9 @@ export default {
         return json;
     },
 
-    requestNewDepositImage: async (transferId, imageData) => {
+    requestNewDepositImage: async (transferId, formData) => {
         let token = await AsyncStorage.getItem('token');
-        let json = await request('post', `/trade/send-receipt?transfer_id=${transferId}&client_id=`, imageData, token);
+        let json = await request('post', `/trade/send-receipt?transfer_id=${transferId}&client_id=`, formData, token);
         return json; 
       }
       

@@ -2,17 +2,17 @@ import React, {useState, useEffect} from "react";
 import { useNavigation } from "@react-navigation/native";
 import C from './style';
 import { formatCurrency } from '../../functions';
-import { LineChart, Grid } from 'react-native-svg-charts';
+import { VictoryBar, VictoryChart, VictoryTheme, VictoryLine } from 'victory-native';
+import {Picker} from '@react-native-picker/picker';
+
 
 import api from '../../services/api';
 import { useStateValue } from '../../contexts/StateContext'; 
 import { Switch } from "react-native";
-import { View } from "react-native";
 
 export default () => {
 
     const navigation = useNavigation();
-    const [context, dispatch] = useStateValue();
 
     const [nameUser, setNameUser] = useState()
     const [balanceAvailable, setBalanceAvailable] = useState()
@@ -21,11 +21,21 @@ export default () => {
     const [autoReinvestment, setAutoReinvestment] = useState();
     const [showAmounts, setShowAmounts] = useState(false);
 
-    const data = [50, 10, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50, -20, -80]
+    const [performances, setPerformances] = useState([]);
+    const [count, setCount] = useState("");
+  
+    const [symbols, setSymbols] = useState([]);
+    const [chosenSymbol, setChosenSymbol] = useState();
 
     useEffect(()=>{
         getUser();
+        getQuotaHistoric();
+        getSymbols();
     }, []);
+
+    useEffect(() => {
+        getQuotaHistoric();
+      }, [chosenSymbol]);
 
     const getUser = async () => {
         const result = await api.getUser();
@@ -35,6 +45,39 @@ export default () => {
             setBalanceAvailableBrazil(result.balances_available.Brasil);
             setBalanceAvailableExterior(result.balances_available.Exterior);
             setAutoReinvestment(result.auto_reinvestment === 1 ? true : false);
+        }else{
+            alert(result.error);
+        }
+    }
+
+    const getQuotaHistoric = async () => {
+        const result = await api.getQuotaHistoric(chosenSymbol);
+        if (result && result.performances) {
+          const performancesWithAccumulated = result.performances.map((performance, index) => {
+            const previousPerformances = result.performances.slice(0, index + 1);
+            const accumulatedValue = previousPerformances.reduce(
+              (total, performance) => total + performance.amount_percentage,
+              0
+            );
+            return {
+              ...performance,
+              amount_percentage: accumulatedValue,
+              formattedDate: new Date(performance.date).toLocaleDateString('pt-BR', { day: 'numeric' }),
+            };
+          });
+    
+          setPerformances(performancesWithAccumulated);
+          setCount(result.count);
+        } else {
+          alert(result.error);
+        }
+      };
+    
+      const getSymbols = async () => {
+        const result = await api.getSymbols();
+        if(result) {
+            setSymbols(result);
+            setChosenSymbol(result[0].id);
         }else{
             alert(result.error);
         }
@@ -128,17 +171,51 @@ export default () => {
                 <C.SubTitleSubContainer>Saldo Disponível no Exterior</C.SubTitleSubContainer>
                 <C.Balance>{showAmounts ? `${formatCurrency(balanceAvailableExterior)}` : '****'}</C.Balance>
             </C.SubContainer>
-            <View style={{marginBottom: 40}}>
-            <C.TitleSubContainer>Rendimentos de USD:</C.TitleSubContainer>
-                <LineChart
-                    style={{ height: 200 }}
-                    data={data}
-                    svg={{ stroke: 'rgb(134, 65, 244)' }}
-                    contentInset={{ top: 20, bottom: 20 }}
-                >
-                    <Grid />
-                </LineChart>
-            </View>
+
+            <C.SubContainerGraph>
+            <C.SubTitleSubContainer>Rendimentos do Mês:</C.SubTitleSubContainer>
+            {count === "0" && 
+            (<C.InformativeText style={{marginTop: 10, marginBottom: 20}}>Ainda Não Há dados a serem exibidos esse mês.</C.InformativeText>
+            )}
+            {count !== "0" && 
+            (<><Picker
+                    style={{backgroundColor: "#FFF",
+                    borderWidth: 10,
+                    borderStyle: "solid",
+                    borderColor: "#000"}}
+                    selectedValue={chosenSymbol}
+                    onValueChange={(itemValue, itemIndex) =>
+                        setChosenSymbol(itemValue)
+                    }>
+                    <Picker.Item label={symbols[0]?.symbol} value= {symbols[0]?.id} />
+                    <Picker.Item label={symbols[1]?.symbol} value= {symbols[1]?.id} />
+                    <Picker.Item label={symbols[2]?.symbol} value= {symbols[2]?.id} />
+                    <Picker.Item label={symbols[3]?.symbol} value= {symbols[3]?.id} />
+                    <Picker.Item label={symbols[4]?.symbol} value= {symbols[4]?.id} />
+                </Picker>
+            <VictoryChart
+            theme={VictoryTheme.material}
+            >
+            <VictoryLine
+                style={{
+                data: { stroke: "#4169E1" },
+                parent: { border: "1px solid #000"}
+                }}
+                animate={{
+                    duration: 2000,
+                    onLoad: { duration: 2000 }
+                  }}
+                data={performances}
+                x= "formattedDate"
+                y= "amount_percentage"
+                tickValues={performances.map((performance, index) => index)}
+                tickFormat={(value) => performances[value]?.formattedDate}
+            />
+            </VictoryChart></>
+            )}
+            </C.SubContainerGraph>
+            
+
         </C.Container>
     );
 
