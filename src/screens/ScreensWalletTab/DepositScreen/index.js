@@ -6,8 +6,13 @@ import { StyleSheet, Modal, Button, Image } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 import api from '../../../services/api';
 import { View } from "react-native";
+import * as FileSystem from 'expo-file-system';
+//import { Buffer } from 'node:buffer';
 
 export default () => {
+
+  global.Buffer = require('buffer').Buffer;
+
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -30,6 +35,7 @@ export default () => {
 
   const [amount, setAmount] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
+  const [imageUri, setImageUri] = useState(null);
   const [typeImage, setTypeImage] = useState(null);
 
   useEffect(() => {
@@ -87,44 +93,41 @@ export default () => {
 
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
+
+      base64: true,
       allowsEditing: true,
-      base64: false,
       quality: 0.6,
     });
 
     if (!result.canceled) {
-      setSelectedImage(result.assets[0].base64);
-      setTypeImage(result.assets[0].type);
+      setSelectedImage(result?.assets[0]?.base64);
+      setImageUri(result?.assets[0].uri);
+      setTypeImage(result?.assets[0].type);
+      console.log(result?.assets[0].uri)
+      console.log(result?.assets[0].type)
     } else {
       alert('Você não selecionou nenhuma imagem');
     }
   };
 
+
   const requestNewDepositImage = async () => {
     if (selectedImage && transferId) {
-      const formData = new FormData();
-      const fileExtension = typeImage.split('/').pop();
-
-      formData.append('image', {
-        uri: selectedImage,
-        name: `image.${fileExtension}`,
-        type: typeImage,
-      });
-
-      let result = await api.requestNewDepositImage(transferId, formData);
+      const byteCharacters = Buffer.from(selectedImage, 'base64');
+      const byteArray = new Uint8Array(byteCharacters);
+      console.log(byteCharacters)
+    
+      let result = await api.requestNewDepositImage(transferId, byteArray);
       if (result.errors) {
         alert(result.errors);
-        showModal();
       } else {
-        alert('deu certo');
-        showModal();
+        alert('Envio do comprovante concluído com sucesso.');
       }
     } else {
-      alert('Preencha os campos corretamente');
-      showModal();
+      alert('Por favor, selecione uma imagem.');
     }
   };
-
+  
   return (
     <C.Container>
       <C.SubContainer>
@@ -218,7 +221,7 @@ export default () => {
             {selectedImage && (
               <View style={{ marginTop: 20 }}>
                 <Image
-                  source={{ uri: selectedImage }}
+                  source={{ uri: imageUri }}
                   style={{ width: 200, height: 200 }}
                 />
               </View>

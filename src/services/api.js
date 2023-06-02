@@ -7,7 +7,7 @@ const year = dataAtual.getFullYear();
 const month = dataAtual.getMonth() + 1;
 
 
-const request = async (method, endpoint, params, token = null) => {
+const request = async (method, endpoint, params, token = null, isImage = false) => {
     method = method.toLowerCase();
     let fullUrl = `${baseUrl}${endpoint}`;
     let body = null;
@@ -23,8 +23,11 @@ const request = async (method, endpoint, params, token = null) => {
             body = JSON.stringify(params);
         break;
     }
-
+    
     let headers = {'Content-Type': 'application/json', 'Accept': 'application/json, application/pdf, text/plain, */*',};
+    if(isImage){
+        headers['Content-Type'] = 'multipart/form-data';
+    }
     if(token){
         headers.Authorization = `Bearer ${token}`;
     }
@@ -169,9 +172,9 @@ export default {
         return json;
     },
 
-    requestNewDepositImage: async (transferId, formData) => {
+    requestNewDepositImage: async (transferId, byteArray) => {
         let token = await AsyncStorage.getItem('token');
-        let json = await request('post', `/trade/send-receipt?transfer_id=${transferId}&client_id=`, formData, token);
+        let json = await request('post', `/trade/send-receipt?transfer_id=${transferId}&client_id=`,  byteArray[0], token, true);
         return json; 
       }
       
