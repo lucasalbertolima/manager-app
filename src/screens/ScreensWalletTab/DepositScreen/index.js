@@ -17,6 +17,7 @@ export default () => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const [name, setName] = useState("");
+  const [idUserInitial, setIdUserInitial] = useState("")
   const [brasil, setBrasil] = useState(true);
   const [exterior, setExterior] = useState(false);
 
@@ -36,16 +37,21 @@ export default () => {
   const [amount, setAmount] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageUri, setImageUri] = useState(null);
-  const [typeImage, setTypeImage] = useState(null);
+  const [imagem, setImagem] = useState(null);
 
   useEffect(() => {
     getUser();
   }, []);
 
+  useEffect(() => {
+    getUser();
+  }, [requestNewDeposit]);
+
   const getUser = async () => {
     const result = await api.getUser();
     if (result && result.name) {
       setName(result.name);
+      setIdUserInitial(result.id)
     } else {
       alert(result.error);
     }
@@ -93,36 +99,48 @@ export default () => {
 
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-
-      base64: true,
       allowsEditing: true,
+      base64: true,
       quality: 0.6,
     });
 
     if (!result.canceled) {
-      setSelectedImage(result?.assets[0]?.base64);
+      setSelectedImage(result?.assets[0].base64);
       setImageUri(result?.assets[0].uri);
-      setTypeImage(result?.assets[0].type);
-      console.log(result?.assets[0].uri)
-      console.log(result?.assets[0].type)
+      setImagem(result.assets[0]);
+
     } else {
       alert('Você não selecionou nenhuma imagem');
     }
   };
 
+  function formData (file){
+    let formData = new FormData();
+    formData.append('image', {uri: imageUri, type: 'image/png', name: 'image.png'});
+    return formData;
+  }
 
-  const requestNewDepositImage = async () => {
-    if (selectedImage && transferId) {
-      const byteCharacters = Buffer.from(selectedImage, 'base64');
-      const byteArray = new Uint8Array(byteCharacters);
-      console.log(byteCharacters)
-    
-      let result = await api.requestNewDepositImage(transferId, byteArray);
-      if (result.errors) {
-        alert(result.errors);
-      } else {
-        alert('Envio do comprovante concluído com sucesso.');
-      }
+
+  const requestNewDepositImage = () => {
+    if (imageUri && transferId) {
+      const datadata = {
+        image: formData(imageUri),
+        client_id: "",
+        transfer_id: transferId
+      };
+      
+      api.requestNewDepositImage(datadata)
+        .then(result => {
+          if (result.errors) {
+            alert(result.errors);
+          } else {
+            console.log(result);
+            alert('Envio do comprovante concluído com sucesso.');
+          }
+        })
+        .catch(error => {
+          console.log('Ocorreu um erro 2:', error);
+        });
     } else {
       alert('Por favor, selecione uma imagem.');
     }
