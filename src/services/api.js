@@ -85,7 +85,7 @@ export default {
 
     getQuotaHistoric: async (chosenSymbol) => {
         let token = await AsyncStorage.getItem('token');
-        let json = await request('get', `/trade/incomes?index=0&length=31&order_by=date&symbol=${chosenSymbol}&asc=1&date_start=${year}-${month-1}-01&date_end=${year}-${month-1}-31`, {}, token);
+        let json = await request('get', `/trade/incomes?index=0&length=31&order_by=date&symbol=${chosenSymbol}&asc=1&date_start=${year}-${month}-01&date_end=${year}-${month}-30`, {}, token);
         return json;
     },
 
@@ -170,39 +170,6 @@ export default {
         let token = await AsyncStorage.getItem('token');
         let json = await request('post', '/trade/request-deposit', data, token);
         return json;
-    },
-
-    requestNewDepositImage: (datadata) => {
-        return new Promise((resolve, reject) => {
-          AsyncStorage.getItem('token')
-            .then(token => {
-              return fetch(`https://api.managertrading.com/trade/send-receipt?transfer_id=${datadata.transfer_id}&client_id=${datadata.client_id}`, {
-                method: 'POST',
-                body: datadata.image,
-                headers: {
-                  'Authorization': token,
-                  'Content-Type': 'multipart/form-data'
-                }
-              });
-            })
-            .then(response => {
-              if (response.ok) {
-                return response.json();
-              } else {
-                throw new Error('Erro na requisição', response.errors);
-              }
-            })
-            .then(json => {
-              console.log('imagem: ', datadata.image);
-              resolve(json);
-            })
-            .catch(error => {
-              console.log('Ocorreu um erro:', error);
-              reject(error);
-            });
-        });
-      }
-      
-      
-    
+    }
+       
     }

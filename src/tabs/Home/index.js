@@ -8,12 +8,12 @@ import {Picker} from '@react-native-picker/picker';
 
 import api from '../../services/api';
 import { useStateValue } from '../../contexts/StateContext'; 
-import { Switch } from "react-native";
+import { Switch, RefreshControl } from "react-native";
 
 export default () => {
 
     const navigation = useNavigation();
-
+    const [refreshing, setRefreshing] = useState(false);
     const [nameUser, setNameUser] = useState()
     const [balanceAvailable, setBalanceAvailable] = useState()
     const [balanceAvailableBrazil, setBalanceAvailableBrazil] = useState()
@@ -102,9 +102,17 @@ export default () => {
         }
     }
 
+    const onRefresh = async () => {
+        setRefreshing(true);
+        await getUser();
+        setRefreshing(false);
+      };
+
 
     return (
-        <C.Container>
+        <C.Container refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
             
             <C.ContainerInitial>
                 <C.TitleInitial>Olá, {nameUser?.split(' ')[0]}</C.TitleInitial>

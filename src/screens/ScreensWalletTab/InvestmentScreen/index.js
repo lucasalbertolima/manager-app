@@ -19,9 +19,17 @@ export default () => {
     const [symbols, setSymbols] = useState([]);
     const [chosenSymbol, setChosenSymbol] = useState();
 
-    const [amount, setAmount] = useState();
+    const [amount, setAmount] = useState('');
 
-      
+    const quota = chosenSymbol == symbols[0]?.id ? formatCurrency(symbols[0]?.quota)
+    : chosenSymbol == symbols[1]?.id ? formatCurrency(symbols[1]?.quota)
+    : chosenSymbol == symbols[2]?.id ? formatCurrency(symbols[2]?.quota)
+    : chosenSymbol == symbols[3]?.id ? formatCurrency(symbols[3]?.quota)
+    : chosenSymbol == symbols[4]?.id ? formatCurrency(symbols[4]?.quota)
+    : '';
+
+    const numericValue = parseFloat(quota.replace(/[^0-9,-]+/g, "").replace(",", "."));
+    const amountValue = parseFloat(amount.replace(/[^0-9,-]+/g, "").replace(",", "."));
 
     useEffect(()=>{
         getUser();
@@ -71,12 +79,13 @@ export default () => {
                 client_id: "",
                 symbol: chosenSymbol
             };
+            console.log(data)
             let result = await api.requestNewInvestiment(data);
             if(result.error){
                 alert(result.error);
 
             } else {
-                alert("Transferência Interna Solicita com Sucesso");
+                alert("Investimento realizado com Sucesso");
             } 
         } else {
             alert("Preencha os campos corretamente");
@@ -113,12 +122,7 @@ export default () => {
 
                     <C.TitleSubContainer>Informações:</C.TitleSubContainer>
                     <C.Balance>Valor do Produto:{' '} 
-                        {chosenSymbol == symbols[0].id ? formatCurrency(symbols[0].quota)
-                         : chosenSymbol == symbols[1].id ? formatCurrency(symbols[1].quota)
-                         : chosenSymbol == symbols[2].id ? formatCurrency(symbols[2].quota)
-                         : chosenSymbol == symbols[3].id ? formatCurrency(symbols[3].quota)
-                         : chosenSymbol == symbols[4].id ? formatCurrency(symbols[4].quota)
-                         : ''}</C.Balance>
+                        {quota}</C.Balance>
                     <C.Balance>Investimento Mínimo:{' '}  
                         {chosenSymbol == symbols[0].id ? formatCurrency(symbols[0].minimum_investment)
                          : chosenSymbol == symbols[1].id ? formatCurrency(symbols[1].minimum_investment)
@@ -141,8 +145,8 @@ export default () => {
                     </C.Balance>
 
                     <C.TitleSubContainer>Seu Investimento:</C.TitleSubContainer>
-                    <C.Balance>Cotas: {formatCurrency(balanceAvailableExterior)}</C.Balance>
-                    <C.Balance>Valor Total: {formatCurrency(balanceAvailableExterior)}</C.Balance>
+                    <C.Balance>Cotas: {amount ? (amountValue/numericValue).toFixed(4) : '0'}</C.Balance>
+                    <C.Balance>Valor Total: R$ {amount ? amount : 0}</C.Balance>
                 
                     </>
                 )}

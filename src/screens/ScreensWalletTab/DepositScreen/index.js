@@ -2,22 +2,19 @@ import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import C from './style';
 import { CheckBox } from 'react-native-elements';
-import { StyleSheet, Modal, Button, Image } from "react-native";
-import * as ImagePicker from 'expo-image-picker';
+import { StyleSheet, Modal, Text, RefreshControl} from "react-native";
 import api from '../../../services/api';
 import { View } from "react-native";
-import * as FileSystem from 'expo-file-system';
-//import { Buffer } from 'node:buffer';
+import { sendReceipt } from '../../../services/apiaxios';
+import * as DocumentPicker from 'expo-document-picker';
 
 export default () => {
 
-  global.Buffer = require('buffer').Buffer;
-
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const [name, setName] = useState("");
-  const [idUserInitial, setIdUserInitial] = useState("")
   const [brasil, setBrasil] = useState(true);
   const [exterior, setExterior] = useState(false);
 
@@ -28,6 +25,9 @@ export default () => {
   const [nameUser, setNameUser] = useState('');
   const [depositRegion, setDepositRegion] = useState('');
   const [createdAt, setCreatedAt] = useState('');
+  const [statusApproved, setStatusApproved] = useState(null);
+  const [statusDisapproved, setStatusDisapproved] = useState(null);
+  const [payment, setPayment] = useState(null)
 
   const handleCheck = () => {
     setBrasil(!brasil);
@@ -35,9 +35,9 @@ export default () => {
   };
 
   const [amount, setAmount] = useState("");
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [imageUri, setImageUri] = useState(null);
-  const [imagem, setImagem] = useState(null);
+  const [documentUri, setDocumentUri] = useState(null);
+  const [typeDocument, setTypeDocument] = useState(null);
+  const [nameDocument, setNameDocument] = useState(null);
 
   useEffect(() => {
     getUser();
@@ -51,7 +51,6 @@ export default () => {
     const result = await api.getUser();
     if (result && result.name) {
       setName(result.name);
-      setIdUserInitial(result.id)
     } else {
       alert(result.error);
     }
@@ -85,7 +84,10 @@ export default () => {
         setNameUser(result.user_id);
         setCreatedAt(result.created_at);
         setNameIdCreatedBy(result.user.name);
-        setDepositRegion(result.deposit_region.name)
+        setDepositRegion(result.deposit_region.name);
+        setStatusApproved(result.approved_by);
+        setStatusDisapproved(result.rejected_by);
+        setPayment(result.receipt)
         showModal();
       }
     } else {
@@ -97,57 +99,54 @@ export default () => {
     setModalVisible(!modalVisible);
   }
 
-  const pickImageAsync = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      base64: true,
-      quality: 0.6,
-    });
 
-    if (!result.canceled) {
-      setSelectedImage(result?.assets[0].base64);
-      setImageUri(result?.assets[0].uri);
-      setImagem(result.assets[0]);
+  const sendDocument = async () => {
 
-    } else {
-      alert('Você não selecionou nenhuma imagem');
+    let result = await DocumentPicker.getDocumentAsync({});
+    setNameDocument(result.name);
+    setTypeDocument(result.mimeType);
+    setDocumentUri(result.uri) 
     }
-  };
+
 
   function formData (file){
     let formData = new FormData();
-    formData.append('image', {uri: imageUri, type: 'image/png', name: 'image.png'});
+    formData.append('image', {uri: file, type: typeDocument, name: nameDocument});
     return formData;
   }
 
-
-  const requestNewDepositImage = () => {
-    if (imageUri && transferId) {
+  const handleSubmitImage = async () => {
+    try {
       const datadata = {
-        image: formData(imageUri),
+        transfer_id: transferId,
         client_id: "",
-        transfer_id: transferId
+        image: formData(documentUri)
       };
+
+      const response = await sendReceipt(datadata);
+      if(response.receipt){
+      alert('comprovante enviado com sucesso')
+      showModal();
+      setDocumentUri(null)
+      }
       
-      api.requestNewDepositImage(datadata)
-        .then(result => {
-          if (result.errors) {
-            alert(result.errors);
-          } else {
-            console.log(result);
-            alert('Envio do comprovante concluído com sucesso.');
-          }
-        })
-        .catch(error => {
-          console.log('Ocorreu um erro 2:', error);
-        });
-    } else {
-      alert('Por favor, selecione uma imagem.');
+    } catch (error) {
+      // Tratar erros
+      console.error(error);
     }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await getUser();
+    setRefreshing(false);
   };
   
   return (
-    <C.Container>
+    <C.Container refreshControl={
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+    }
+    >
       <C.SubContainer>
         <C.TitleSubContainer>Dados do usuário:</C.TitleSubContainer>
         <C.SubTitleSubContainer>Depósito em nome de:{'\n'}{name}</C.SubTitleSubContainer>
@@ -226,26 +225,25 @@ export default () => {
               Destino: {depositRegion}
             </C.SubTitleSubContainer>
             <C.SubTitleSubContainer style={{ textAlign: 'center' }}>
-              Status:
+              Status: {statusApproved ? "aprovado" : statusDisapproved ? "reprovado" : "pendente"}
             </C.SubTitleSubContainer>
             <C.SubTitleSubContainer style={{ textAlign: 'center' }}>
-              Comprovante:
+              Comprovante: {payment ? 'Enviado' : 'Pendente'}
             </C.SubTitleSubContainer>
 
-            <C.ButtonArea style={{ backgroundColor: "#008000" }} onPress={pickImageAsync}>
+            <C.ButtonArea style={{ backgroundColor: "#008000" }} onPress={sendDocument}>
               <C.ButtonText>SELECIONAR COMPROVANTE</C.ButtonText>
             </C.ButtonArea>
 
-            {selectedImage && (
-              <View style={{ marginTop: 20 }}>
-                <Image
-                  source={{ uri: imageUri }}
-                  style={{ width: 200, height: 200 }}
-                />
+            {documentUri && (
+              <View style={{ marginTop: 20 , backgroundColor: "#FFF", padding: 10}}>
+                <Text>Comprovante:</Text>
+                <Text>Nome: {nameDocument}</Text>
+                <Text>Formato: {typeDocument}</Text>
               </View>
             )}
 
-            <C.ButtonArea style={{ backgroundColor: "#008000" }} onPress={requestNewDepositImage}>
+            <C.ButtonArea style={{ backgroundColor: "#008000" }} onPress={handleSubmitImage}>
               <C.ButtonText>ENVIAR COMPROVANTE</C.ButtonText>
             </C.ButtonArea>
           </View>
