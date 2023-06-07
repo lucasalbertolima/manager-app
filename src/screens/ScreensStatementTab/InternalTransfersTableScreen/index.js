@@ -10,8 +10,6 @@ import { Text, FlatList, View } from "react-native";
 
 export default () => {
 
-    const navigation = useNavigation();
-    const [context, dispatch] = useStateValue();
 
     const [internalTransfers, setInternalTransfers] = useState([]);
     const [count, setCount] = useState("");

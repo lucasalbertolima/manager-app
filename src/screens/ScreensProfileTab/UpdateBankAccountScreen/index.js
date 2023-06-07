@@ -90,12 +90,7 @@ export default () => {
 
                 <C.TitleSubContainer>Tipo da conta:</C.TitleSubContainer>
                 <Picker
-                    style={{backgroundColor: "#FFF",
-                    borderWidth: 10,
-                    borderStyle: "solid",
-                    borderColor: "#000",
-                    marginBottom: 5,
-                    marginTop: 5}}
+                    style={{backgroundColor: "#FFF"}}
                     selectedValue={typeBank}
                     onValueChange={(itemValue, itemIndex) =>
                         setTypeBank(itemValue)

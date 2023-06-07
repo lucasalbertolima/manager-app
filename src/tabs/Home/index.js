@@ -2,20 +2,20 @@ import React, {useState, useEffect} from "react";
 import { useNavigation } from "@react-navigation/native";
 import C from './style';
 import { formatCurrency } from '../../functions';
-import { VictoryBar, VictoryChart, VictoryTheme, VictoryLine } from 'victory-native';
+import { VictoryChart, VictoryTheme, VictoryLine } from 'victory-native';
 import {Picker} from '@react-native-picker/picker';
-
+import { Switch, RefreshControl } from "react-native";
 
 import api from '../../services/api';
-import { useStateValue } from '../../contexts/StateContext'; 
-import { Switch, RefreshControl } from "react-native";
+
 
 export default () => {
 
     const navigation = useNavigation();
     const [refreshing, setRefreshing] = useState(false);
     const [nameUser, setNameUser] = useState()
-    const [balanceAvailable, setBalanceAvailable] = useState()
+    const [investment, setInvestment] = useState()
+    const [patrimony, setPatrimony] = useState()
     const [balanceAvailableBrazil, setBalanceAvailableBrazil] = useState()
     const [balanceAvailableExterior, setBalanceAvailableExterior] = useState()
     const [autoReinvestment, setAutoReinvestment] = useState();
@@ -29,6 +29,7 @@ export default () => {
 
     useEffect(()=>{
         getUser();
+        getBalances();
         getQuotaHistoric();
         getSymbols();
     }, []);
@@ -41,10 +42,19 @@ export default () => {
         const result = await api.getUser();
         if(result && result.name) {
             setNameUser(result.name);
-            setBalanceAvailable(result.balance_available);
-            setBalanceAvailableBrazil(result.balances_available.Brasil);
-            setBalanceAvailableExterior(result.balances_available.Exterior);
             setAutoReinvestment(result.auto_reinvestment === 1 ? true : false);
+        }else{
+            alert(result.error);
+        }
+    }
+
+    const getBalances = async () => {
+        const result = await api.getBalances();
+        if(result && result.balance) {
+            setPatrimony(result.total_balance);
+            setInvestment(result.balance);
+            setBalanceAvailableBrazil(result.local_balance);
+            setBalanceAvailableExterior(result.foreign_balance);
         }else{
             alert(result.error);
         }
@@ -105,6 +115,7 @@ export default () => {
     const onRefresh = async () => {
         setRefreshing(true);
         await getUser();
+        await getBalances();
         setRefreshing(false);
       };
 
@@ -129,7 +140,7 @@ export default () => {
                 <C.InformativeText>{!showAmounts ? 'Exibir Saldo' : 'Esconder Saldo'}</C.InformativeText>
                 </C.SubContainerSwitch>
                 <C.TitleSubContainer>Seu Patrimônio:</C.TitleSubContainer>
-                <C.Balance>{showAmounts ? 'R$ 0,00' : '****'}</C.Balance>
+                <C.Balance>{showAmounts ? formatCurrency(patrimony) : '****'}</C.Balance>
                 <C.InformativeText>* Este valor representa a soma do saldo disponível e de todos os produtos investidos em sua conta.</C.InformativeText>
                 <C.SubContainerSwitch>
                 <Switch 
@@ -171,7 +182,7 @@ export default () => {
                 <C.TitleSubContainer>Detalhes</C.TitleSubContainer>
                 
                 <C.SubTitleSubContainer>Investimento:</C.SubTitleSubContainer>
-                <C.Balance>{showAmounts ? `${formatCurrency(balanceAvailable)}` : '****'}</C.Balance>
+                <C.Balance>{showAmounts ? `${formatCurrency(investment)}` : '****'}</C.Balance>
                 
                 <C.SubTitleSubContainer>Saldo Disponível no Brasil</C.SubTitleSubContainer>
                 <C.Balance>{showAmounts ? `${formatCurrency(balanceAvailableBrazil)}` : '****'}</C.Balance>
@@ -187,10 +198,7 @@ export default () => {
             )}
             {count !== "0" && 
             (<><Picker
-                    style={{backgroundColor: "#FFF",
-                    borderWidth: 10,
-                    borderStyle: "solid",
-                    borderColor: "#000"}}
+                    style={{backgroundColor: "#FFF"}}
                     selectedValue={chosenSymbol}
                     onValueChange={(itemValue, itemIndex) =>
                         setChosenSymbol(itemValue)
@@ -200,6 +208,7 @@ export default () => {
                     <Picker.Item label={symbols[2]?.symbol} value= {symbols[2]?.id} />
                     <Picker.Item label={symbols[3]?.symbol} value= {symbols[3]?.id} />
                     <Picker.Item label={symbols[4]?.symbol} value= {symbols[4]?.id} />
+                    <Picker.Item label={symbols[5]?.symbol} value= {symbols[5]?.id} />
                 </Picker>
             <VictoryChart
             theme={VictoryTheme.material}

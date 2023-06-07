@@ -1,131 +1,162 @@
 import React, {useState, useEffect} from "react";
 import { useNavigation } from "@react-navigation/native";
 import C from './style';
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import {formatCurrency} from '../../../functions'
+import {Picker} from '@react-native-picker/picker';
 
 
 import api from '../../../services/api';
-import { useStateValue } from '../../../contexts/StateContext'; 
+import { View } from "react-native";
 
 export default () => {
 
-    const navigation = useNavigation();
-    const [context, dispatch] = useStateValue();
+    const [symbols, setSymbols] = useState([]);
+    const [chosenSymbol, setChosenSymbol] = useState();
+    const [symbolValues, setSymbolValues] = useState([])
+    const [amount, setAmount] = useState(0);
 
-    const [user, setUser] = useState();
-    const [cpf, setCpf] = useState();
-    const [email, setEmail] = useState();
-    const [dateOfBirth, setDateOfBirth] = useState();
-    const [phone, setPhone] = useState();
-    const [cep, setCep] = useState();
-    const [address, setAddress] = useState();
-    const [streetAddress, setStreetAddress] = useState();
-    const [country, setCountry] = useState();
-    const [district, setDistrict] = useState();
-    const [city, setCity] = useState();
-    const [state, setState] = useState();
-    const [idManager, setIdManager] = useState();
-    const [manager, setManager] = useState();
-    const [accountNumber, setAccountNumber] = useState();
-    const [bankNumber, setBankNumber] = useState();
-    const [branchNumber, setBranchNumber] = useState();
-    const [typeBank, setTypeBank] = useState();
-    const [variation, setVariation] = useState();
+
+    
+
+    function getInvestmentMinimum(chosenSymbol, symbols) {
+        for (const symbol of symbols) {
+          if (symbol && chosenSymbol === symbol.id) {
+            return formatCurrency(symbol.minimum_investment);
+          }
+        }
+        return '';
+      }
+    const minimumInvestment = getInvestmentMinimum(chosenSymbol, symbolValues);
 
     useEffect(()=>{
-        getUser();
+        getBalancesPerSymbol();
+        getSymbols();
     }, []);
+    useEffect(()=>{
+        getBalancesPerSymbol();
+    }, [chosenSymbol]);
 
-    const getUser = async () => {
-        const result = await api.getUser();
-        if(result && result.name) {
-            setUser(result.name);
-            setCpf(result.cpf);
-            setEmail(result.email);
-            setDateOfBirth(result.date_of_birth);
-            setPhone(result.phone);
-            setCep(result.address.cep);
-            setAddress(result.address.line_1 + ' ' + result.address.number);
-            setStreetAddress(result.address.line_2);
-            setCountry(result.address.country);
-            setDistrict(result.address.district);
-            setCity(result.address.city);
-            setState(result.address.state);
-            setIdManager(result.manager_id);
-            setManager(result.manager?.name || "");
-
-
-            setAccountNumber(result.bank.account_number);
-            setBankNumber(result.bank.bank_number);
-            setBranchNumber(result.bank.branch_number);
-            setTypeBank(result.bank.type);
-            setVariation(result.bank.variation);
+    const getBalancesPerSymbol = async () => {
+        const result = await api.getBalancesPerSymbol();
+        if(result) {
+            setSymbols(result.symbols);
         }else{
             alert(result.error);
         }
     }
 
+    const getSymbols = async () => {
+        const result = await api.getSymbols();
+        if(result) {
+            setSymbolValues(result)
+        }else{
+            console.log(result)
+        }
+    }
+
+
+    const requestNewInvestiment = async () => {
+        if(amount && chosenSymbol) {
+            const data = {
+                amount: amount,
+                client_id: "",
+                symbol: chosenSymbol
+            };
+            console.log(data)
+            let result = await api.requestNewInvestiment(data);
+            if(result.error){
+                alert(result.error);
+
+            } else {
+                alert("Investimento realizado com Sucesso");
+            } 
+        } else {
+            alert("Preencha os campos corretamente");
+        }
+
+    }
+
+    const moreAmount = () => {
+        setAmount(amount + 1000)
+    }
+    const lessAmount = () => {
+        if(amount>0){
+        setAmount(amount - 1000)
+        }else{
+            setAmount(0)
+        }
+    }
+
     return (
         <C.Container>
+
             <C.SubContainer>
-                <C.TitleSubContainer>Nome Completo:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{user}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>E-mail:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{email}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>Cpf / Passport:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{cpf}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>Data de Nascimento / Birth Date:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{dateOfBirth}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>Telefone / Phone Number:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{phone}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>Cep / Postal Code:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{cep}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>Endereço / Address:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{address}</C.SubTitleSubContainer>
-
-                <C.TitleSubContainer>Complemento / Street Address Line 2:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{streetAddress}</C.SubTitleSubContainer>
+            {symbols[0] && (
+            <>
             
-                <C.TitleSubContainer>País / Country:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{country}</C.SubTitleSubContainer>
+            <C.TitleSubContainer>Selecione o produto:</C.TitleSubContainer>
+                <Picker
+                    style={{backgroundColor: "#FFF"}}
+                    selectedValue={chosenSymbol}
+                    onValueChange={(itemValue, itemIndex) => setChosenSymbol(itemValue)
+                    }>
+                    {symbols.map((symbol, index) => {
+                        if (symbol) {
+                        return (
+                            <Picker.Item
+                            key={symbol.id}
+                            label={symbol.symbol}
+                            value={symbol.id}
+                            />
+                        );
+                        } else {
+                        return null; // Não renderizar o Picker.Item se o elemento estiver ausente
+                        }
+                    })}
+                </Picker>
+                
 
-                <C.TitleSubContainer>Bairro / District:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{district}</C.SubTitleSubContainer>
+                    <C.TitleSubContainer>Informações:</C.TitleSubContainer>
+                    <C.Balance>Taxa de Resgate Antecipado:{' '} 5%</C.Balance>
+                    
+                    <C.Balance>Investimento Mínimo:{' '} {minimumInvestment ? minimumInvestment : '0'}</C.Balance>
 
-                <C.TitleSubContainer>Cidade / City:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{city}</C.SubTitleSubContainer>
+                    <C.Balance>Seu Saldo Disponível:{' '}
+                        {formatCurrency(symbols[0]?.amount)}
+                    </C.Balance>
+                    <C.Balance>
+                        Produto Escolhido:{' '}
+                        {symbols[0]?.symbol_id}
+                    </C.Balance>
 
-                <C.TitleSubContainer>Estado / State:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{state}</C.SubTitleSubContainer>
 
-                <C.TitleSubContainer>Id do Manager:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{idManager ?? 'Não Possui'}</C.SubTitleSubContainer>
+                    <C.TitleSubContainer>Observações:</C.TitleSubContainer>
+                    <C.Balance>
+                        Você pode realizar uma retirada parcial de até: {formatCurrency(symbols[0]?.amount)} ou uma retirada todal de: {formatCurrency(symbols[0]?.amount)}
+                    </C.Balance>
+                
+                    </>
+                )}
+                    <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+                    <C.ButtonValue onPress={lessAmount}>
+                        <C.ButtonValueText>- R$ 1.000,00</C.ButtonValueText>
+                    </C.ButtonValue>
+                    <C.ButtonValue onPress={moreAmount}>
+                        <C.ButtonValueText>+ R$ 1.000,00</C.ButtonValueText>
+                    </C.ButtonValue>
+                    </View>
+                    
+                    <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+                    <C.ButtonArea onPress={requestNewInvestiment}>
+                        <C.ButtonText>Investir</C.ButtonText>
+                    </C.ButtonArea>
+                    </View>
 
-                <C.TitleSubContainer>Manager:</C.TitleSubContainer>
-                <C.SubTitleSubContainer>{manager ? manager : "Não Possui"}</C.SubTitleSubContainer>
             </C.SubContainer>
 
-
-            <C.SubContainer>
-                <C.TitleSubContainer>Dados Bancários</C.TitleSubContainer>
-                <C.SubTitleSubContainer>Banco / Bank:</C.SubTitleSubContainer>
-                <C.Balance>{bankNumber}</C.Balance>
-                <C.SubTitleSubContainer>Agência / Branch:</C.SubTitleSubContainer>
-                <C.Balance>{branchNumber}</C.Balance>
-                <C.SubTitleSubContainer>Conta / Account: </C.SubTitleSubContainer>
-                <C.Balance>{accountNumber}</C.Balance>
-                <C.SubTitleSubContainer>Tipo / Type:</C.SubTitleSubContainer>
-                <C.Balance>{typeBank === 1 ? "Conta Corrente" : "Conta Poupança"}</C.Balance>
-                <C.SubTitleSubContainer>Variação:</C.SubTitleSubContainer>
-                <C.Balance>{variation}</C.Balance>
-            </C.SubContainer>
         </C.Container>
+
+        
     );
 
 }

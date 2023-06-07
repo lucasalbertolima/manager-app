@@ -85,12 +85,7 @@ export default () => {
 
 <C.TitleSubContainer>Selecione o produto:</C.TitleSubContainer>
                 <Picker
-                    style={{backgroundColor: "#FFF",
-                    borderWidth: 10,
-                    borderStyle: "solid",
-                    borderColor: "#000",
-                    marginBottom: 15,
-                    marginTop: 5}}
+                    style={{backgroundColor: "#FFF"}}
                     selectedValue={chosenSymbol}
                     onValueChange={(itemValue, itemIndex) =>
                         setChosenSymbol(itemValue)
@@ -100,6 +95,7 @@ export default () => {
                     <Picker.Item label={symbols[2]?.symbol} value= {symbols[2]?.id} />
                     <Picker.Item label={symbols[3]?.symbol} value= {symbols[3]?.id} />
                     <Picker.Item label={symbols[4]?.symbol} value= {symbols[4]?.id} />
+                    <Picker.Item label={symbols[5]?.symbol} value= {symbols[5]?.id} />
                 </Picker>
       {count === "0" && <Text>Não há Histórico a ser mostrado</Text>}
       <FlatList

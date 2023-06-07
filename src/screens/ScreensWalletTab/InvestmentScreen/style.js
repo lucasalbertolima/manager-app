@@ -58,13 +58,19 @@ export default {
         font-size: 15px;
         font-weight: bold;
     `,
-    RoundButtonImage: styled.Image`
-        width: 40px;
-        height: 40px;    
+    ButtonValue: styled.TouchableOpacity`
+        background-color: #000;
+        padding: 15px;
+        justify-content: center;
+        align-items: center;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        margin-top: 15px;
+        width: 150px;
     `,
-    RoundButtonText: styled.Text`
-        color: #000;
-        font-size: 16px;
-        font-weight: bold;
-    `
+    ButtonValueText: styled.Text`
+    color: #FFF;
+    font-size: 18px;
+    font-weight: bold;
+`,
 };

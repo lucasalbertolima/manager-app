@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import { useNavigation } from "@react-navigation/native";
 import C from './style';
-import {formatCurrency} from '../../../functions';
+import {formatCurrency, convertDataAndHours} from '../../../functions';
 
 
 import api from '../../../services/api';
@@ -41,7 +41,7 @@ export default () => {
                         <C.SubContainer>
                             <C.SubContainerFlex>
                                 <C.TitleSubContainer>Data e Hora: {' '}</C.TitleSubContainer>
-                                <C.SubTitleSubContainer>{item.created_at}</C.SubTitleSubContainer>
+                                <C.SubTitleSubContainer>{convertDataAndHours(item.created_at)}</C.SubTitleSubContainer>
                             </C.SubContainerFlex>
 
                             <C.SubContainerFlex>

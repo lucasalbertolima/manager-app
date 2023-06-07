@@ -6,12 +6,9 @@ import {Picker} from '@react-native-picker/picker';
 
 
 import api from '../../../services/api';
-import { useStateValue } from '../../../contexts/StateContext'; 
+import { View } from "react-native";
 
 export default () => {
-
-    const navigation = useNavigation();
-    const [context, dispatch] = useStateValue();
 
     const [balanceAvailableBrasil, setBalanceAvailableBrasil] = useState(0);
     const [balanceAvailableExterior, setBalanceAvailableExterior] = useState(0);
@@ -19,17 +16,18 @@ export default () => {
     const [symbols, setSymbols] = useState([]);
     const [chosenSymbol, setChosenSymbol] = useState();
 
-    const [amount, setAmount] = useState('');
+    const [amount, setAmount] = useState(0);
 
-    const quota = chosenSymbol == symbols[0]?.id ? formatCurrency(symbols[0]?.quota)
-    : chosenSymbol == symbols[1]?.id ? formatCurrency(symbols[1]?.quota)
-    : chosenSymbol == symbols[2]?.id ? formatCurrency(symbols[2]?.quota)
-    : chosenSymbol == symbols[3]?.id ? formatCurrency(symbols[3]?.quota)
-    : chosenSymbol == symbols[4]?.id ? formatCurrency(symbols[4]?.quota)
-    : '';
-
-    const numericValue = parseFloat(quota.replace(/[^0-9,-]+/g, "").replace(",", "."));
-    const amountValue = parseFloat(amount.replace(/[^0-9,-]+/g, "").replace(",", "."));
+    function getSymbolQuota(chosenSymbol, symbols) {
+        for (const symbol of symbols) {
+          if (symbol && chosenSymbol === symbol.id) {
+            return formatCurrency(symbol.quota);
+          }
+        }
+        return '';
+      }
+    const quota = getSymbolQuota(chosenSymbol, symbols);
+    const quotaNumber = parseFloat(quota.replace(/[^0-9,-]+/g, "").replace(",", "."));
 
     useEffect(()=>{
         getUser();
@@ -57,25 +55,11 @@ export default () => {
         }
     }
 
-    const cleanValue = (value) => {
-        // Verifica se a variável value é uma string vazia ou não está definida
-        if (!value || value === '') {
-          return 0; // Retorna zero como valor padrão
-        }
-      
-        // Remove os caracteres da máscara, como separadores de milhares, separadores decimais e unidades
-        const cleanAmount = value.replace(/[^0-9]/g, '');
-      
-        // Converte o valor para número
-        return Number(cleanAmount)/100;
-      };
-
 
     const requestNewInvestiment = async () => {
         if(amount && chosenSymbol) {
-            const cleanAmount = cleanValue(amount);
             const data = {
-                amount: cleanAmount,
+                amount: amount,
                 client_id: "",
                 symbol: chosenSymbol
             };
@@ -93,6 +77,17 @@ export default () => {
 
     }
 
+    const moreAmount = () => {
+        setAmount(amount + 1000)
+    }
+    const lessAmount = () => {
+        if(amount>0){
+        setAmount(amount - 1000)
+        }else{
+            setAmount(0)
+        }
+    }
+
     return (
         <C.Container>
 
@@ -102,72 +97,73 @@ export default () => {
             
             <C.TitleSubContainer>Selecione o produto:</C.TitleSubContainer>
                 <Picker
-                    style={{backgroundColor: "#FFF",
-                    borderWidth: 10,
-                    borderStyle: "solid",
-                    borderColor: "#000",
-                    marginBottom: 5,
-                    marginTop: 5}}
+                    style={{backgroundColor: "#FFF"}}
                     selectedValue={chosenSymbol}
-                    onValueChange={(itemValue, itemIndex) =>
-                        setChosenSymbol(itemValue)
+                    onValueChange={(itemValue, itemIndex) => setChosenSymbol(itemValue)
                     }>
-                    <Picker.Item label={symbols[0]?.symbol} value= {symbols[0].id} />
-                    <Picker.Item label={symbols[1]?.symbol} value= {symbols[1].id} />
-                    <Picker.Item label={symbols[2]?.symbol} value= {symbols[2].id} />
-                    <Picker.Item label={symbols[3]?.symbol} value= {symbols[3].id} />
-                    <Picker.Item label={symbols[4]?.symbol} value= {symbols[4].id} />
+                    {symbols.map((symbol, index) => {
+                        if (symbol) {
+                        return (
+                            <Picker.Item
+                            key={symbol.id}
+                            label={symbol.symbol}
+                            value={symbol.id}
+                            />
+                        );
+                        } else {
+                        return null; // Não renderizar o Picker.Item se o elemento estiver ausente
+                        }
+                    })}
                 </Picker>
                 
 
                     <C.TitleSubContainer>Informações:</C.TitleSubContainer>
                     <C.Balance>Valor do Produto:{' '} 
                         {quota}</C.Balance>
-                    <C.Balance>Investimento Mínimo:{' '}  
-                        {chosenSymbol == symbols[0].id ? formatCurrency(symbols[0].minimum_investment)
-                         : chosenSymbol == symbols[1].id ? formatCurrency(symbols[1].minimum_investment)
-                         : chosenSymbol == symbols[2].id ? formatCurrency(symbols[2].minimum_investment)
-                         : chosenSymbol == symbols[3].id ? formatCurrency(symbols[3].minimum_investment)
-                         : chosenSymbol == symbols[4].id ? formatCurrency(symbols[4].minimum_investment)
-                         : ''}
-                    </C.Balance>
+                        <C.Balance>
+                        Investimento Mínimo:{' '}
+                        {symbols.map((symbol) => {
+                            if (symbol && chosenSymbol === symbol.id) {
+                            return formatCurrency(symbol.minimum_investment);
+                            }
+                            return null;
+                        })}
+                        </C.Balance>
                     <C.Balance>Seu Saldo Disponível:{' '}
                         {chosenSymbol === symbols[0].id ? formatCurrency(balanceAvailableBrasil)
                          : formatCurrency(balanceAvailableExterior)}
                     </C.Balance>
-                    <C.Balance>Produto Escolhido:{' '}
-                        {chosenSymbol == symbols[0].id ? symbols[0].symbol
-                         : chosenSymbol == symbols[1].id ? symbols[1].symbol
-                         : chosenSymbol == symbols[2].id ? symbols[2].symbol
-                         : chosenSymbol == symbols[3].id ? symbols[3].symbol
-                         : chosenSymbol == symbols[4].id ? symbols[4].symbol
-                         : 'R$ 0,00'}
+                    <C.Balance>
+                        Produto Escolhido:{' '}
+                        {symbols.map((symbol) => {
+                            if (symbol && chosenSymbol === symbol.id) {
+                            return symbol.symbol;
+                            }
+                            return null;
+                        })}
                     </C.Balance>
 
+
                     <C.TitleSubContainer>Seu Investimento:</C.TitleSubContainer>
-                    <C.Balance>Cotas: {amount ? (amountValue/numericValue).toFixed(4) : '0'}</C.Balance>
-                    <C.Balance>Valor Total: R$ {amount ? amount : 0}</C.Balance>
+                    <C.Balance>Cotas: {amount ? (amount/quotaNumber).toFixed(4) : '0'}</C.Balance>
+                    <C.Balance>Valor Total: {amount ? `R$ ${amount},00` : '0,00'}</C.Balance>
                 
                     </>
                 )}
-
-                <C.TextInputContainer
-                    type={'money'}
-                    options={{
-                        precision: 2,
-                        separator: ',',
-                        delimiter: '.',
-                        unit: '',
-                        suffixUnit: '',
-                    }}
-                    placeholder="Insira o valor em R$ aqui"
-                    value={amount}
-                    onChangeText={(t) => {setAmount(t)}}
-                />
-
-                <C.ButtonArea onPress={requestNewInvestiment}>
-                    <C.ButtonText>Investir</C.ButtonText>
-                </C.ButtonArea>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+                    <C.ButtonValue onPress={lessAmount}>
+                        <C.ButtonValueText>- R$ 1.000,00</C.ButtonValueText>
+                    </C.ButtonValue>
+                    <C.ButtonValue onPress={moreAmount}>
+                        <C.ButtonValueText>+ R$ 1.000,00</C.ButtonValueText>
+                    </C.ButtonValue>
+                    </View>
+                    
+                    <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+                    <C.ButtonArea onPress={requestNewInvestiment}>
+                        <C.ButtonText>Investir</C.ButtonText>
+                    </C.ButtonArea>
+                    </View>
 
             </C.SubContainer>
 

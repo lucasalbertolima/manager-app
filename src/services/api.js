@@ -65,9 +65,15 @@ export default {
         return json;
     },
 
-    postAutoReinvest: async (data) => {
+    getBalances: async () => {
         let token = await AsyncStorage.getItem('token');
-        let json = await request('post', '/account/auto-reinvestment', data, token);
+        let json = await request('get', '/account/balances', {}, token);
+        return json;
+    },
+
+    getBalancesPerSymbol: async () => {
+        let token = await AsyncStorage.getItem('token');
+        let json = await request('get', '/account/balances-per-symbol', {}, token);
         return json;
     },
 
@@ -86,6 +92,12 @@ export default {
     getQuotaHistoric: async (chosenSymbol) => {
         let token = await AsyncStorage.getItem('token');
         let json = await request('get', `/trade/incomes?index=0&length=31&order_by=date&symbol=${chosenSymbol}&asc=1&date_start=${year}-${month}-01&date_end=${year}-${month}-30`, {}, token);
+        return json;
+    },
+
+    getInvestmentsHistoric: async (chosenSymbol) => {
+        let token = await AsyncStorage.getItem('token');
+        let json = await request('get', `/trade/investments?past=true&length=50&order_by=created_at&type=&asc=&date_start=&symbol=${chosenSymbol}&date_end=`, {}, token);
         return json;
     },
 
@@ -119,6 +131,12 @@ export default {
         return json;
     },
 
+    getSymbolId: async (data) => {
+        let token = await AsyncStorage.getItem('token');
+        let json = await request('get', `/trade/symbol?symbol_id:gZ`, {}, token);
+        return json;
+    },
+
     getWithdrawsHistoric: async () => {
         let token = await AsyncStorage.getItem('token');
         let json = await request('get', '/trade/withdraw-requests?index=0&length=&order_by=created_at&type=all&asc=desc&date_start=&date_end=', {}, token);
@@ -128,6 +146,12 @@ export default {
     logout: async () => {
         await AsyncStorage.removeItem('token');
         return;
+    },
+
+    postAutoReinvest: async (data) => {
+        let token = await AsyncStorage.getItem('token');
+        let json = await request('post', '/account/auto-reinvestment', data, token);
+        return json;
     },
 
     updatePassword: async (newPassword, password) => {
