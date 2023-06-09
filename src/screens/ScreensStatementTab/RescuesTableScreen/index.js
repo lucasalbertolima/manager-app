@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import { useNavigation } from "@react-navigation/native";
 import C from './style';
-import {formatCurrency} from '../../../functions';
+import {formatCurrency, convertDataAndHours} from '../../../functions';
 
 
 import api from '../../../services/api';

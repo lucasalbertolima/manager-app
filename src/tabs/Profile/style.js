@@ -5,7 +5,8 @@ const isAndroid = Platform.OS === 'android';
 
 export default {
     Container: styled.SafeAreaView`
-        margin-top: ${isAndroid ? `${StatusBar.currentHeight}px` : 0};
+        margin-top: ${isAndroid ? `${StatusBar.currentHeight}px` : '30px'};
+        margin: 10px;
         flex: 1;
         padding: 10px;
         background-color: #FFF;

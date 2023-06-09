@@ -132,7 +132,7 @@ export default () => {
       
     } catch (error) {
       // Tratar erros
-      console.error(error);
+      alert(error);
     }
   };
 

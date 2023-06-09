@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from "react";
 import { useNavigation } from "@react-navigation/native";
 import C from './style';
-import {formatCurrency} from '../../../functions';
-
+import {formatCurrency, convertDataAndHours} from '../../../functions';
+import { getInternalTransfers } from "../../../services/apiaxios";
 
 import api from '../../../services/api';
 import { useStateValue } from '../../../contexts/StateContext'; 
@@ -20,7 +20,7 @@ export default () => {
     }, []);
 
     const getInternalTransfersHistoric = async () => {
-        const result = await api.getInternalTransfersHistoric();
+        const result = await getInternalTransfers();
         if(result && result['internal-transfers']) {
             setInternalTransfers(result['internal-transfers']);
             setCount(result.count)
@@ -37,7 +37,12 @@ export default () => {
                         <C.SubContainer>
                             <C.SubContainerFlex>
                                 <C.TitleSubContainer>Data e Hora: {' '}</C.TitleSubContainer>
-                                <C.SubTitleSubContainer>{''}</C.SubTitleSubContainer>
+                                <C.SubTitleSubContainer>{convertDataAndHours(item.created_at)}</C.SubTitleSubContainer>
+                            </C.SubContainerFlex>
+
+                            <C.SubContainerFlex>
+                                <C.TitleSubContainer>Data da Liberação: {' '}</C.TitleSubContainer>
+                                <C.SubTitleSubContainer>{convertDataAndHours(item.approved_at)}</C.SubTitleSubContainer>
                             </C.SubContainerFlex>
 
                             <C.SubContainerFlex>
@@ -46,20 +51,20 @@ export default () => {
                             </C.SubContainerFlex>
 
                             <C.SubContainerFlex>
-                                <C.TitleSubContainer>Formato: {' '}</C.TitleSubContainer>
-                                <C.SubTitleSubContainer>{`Do  para  o `}</C.SubTitleSubContainer>
+                                <C.TitleSubContainer>Origem: {' '}</C.TitleSubContainer>
+                                <C.SubTitleSubContainer>{item.from}</C.SubTitleSubContainer>
+                            </C.SubContainerFlex>
+
+                            <C.SubContainerFlex>
+                                <C.TitleSubContainer>Destino: {' '}</C.TitleSubContainer>
+                                <C.SubTitleSubContainer>{item.to}</C.SubTitleSubContainer>
                             </C.SubContainerFlex>
 
                             <C.SubContainerFlex>
                                 <C.TitleSubContainer>Status: {' '}</C.TitleSubContainer>
                                 <C.SubTitleSubContainer>
-                                    {''}
+                                    {item.approved_at ? 'Aprovado' : item.rejected_at ? 'Reprovado': 'Pendente'}
                                 </C.SubTitleSubContainer>
-                            </C.SubContainerFlex>
-
-                            <C.SubContainerFlex>
-                                <C.TitleSubContainer>Solicitante: {' '}</C.TitleSubContainer>
-                                <C.SubTitleSubContainer>{item.created_by.name}</C.SubTitleSubContainer>
                             </C.SubContainerFlex>
 
                         </C.SubContainer>

@@ -5,6 +5,7 @@ export default {
         flex: 1;
         padding: 10px;
         background-color: #F5F6FA;
+        margin: 10px;
     `,
     SubContainer: styled.View`
         background-color: #EBECF0;

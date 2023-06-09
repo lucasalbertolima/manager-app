@@ -23,6 +23,7 @@ export default {
         color: #000;
         font-size: 15px;
         padding: 10px;
+        margin: 15px;
         margin-bottom: 15px;
     `,
     ButtonArea: styled.TouchableOpacity`
@@ -31,6 +32,7 @@ export default {
         justify-content: center;
         align-items: center;
         border-radius: 5px;
+        margin: 15px;
         margin-bottom: 15px;
     `,
     ButtonText: styled.Text`

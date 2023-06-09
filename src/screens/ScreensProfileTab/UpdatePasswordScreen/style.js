@@ -6,6 +6,7 @@ export default {
         padding: 20px;
         background-color: #F5F6FA;
         justify-content: center;
+        margin: 10px;
     `,
     Logo: styled.Image`
         width: 300px;
@@ -22,12 +23,12 @@ export default {
         border-radius: 5px;
         color: #000;
         font-size: 15px;
-        padding: 10px;
+        padding: 15px;
         margin-bottom: 15px;
     `,
     ButtonArea: styled.TouchableOpacity`
         background-color: #000;
-        padding: 12px;
+        padding: 15 px;
         justify-content: center;
         align-items: center;
         border-radius: 5px;

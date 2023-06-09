@@ -13,5 +13,5 @@ export function convertDataAndHours(date) {
 
 export function variation(valueFinish, valueInitial) {
   const variation = ((valueFinish - valueInitial)/valueInitial)*100;
-  return variation
+  return variation.toFixed(4);
 };

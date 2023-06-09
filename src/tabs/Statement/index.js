@@ -62,6 +62,16 @@ export default () => {
                     <C.InformativeText>Clique para ver mais</C.InformativeText>
             </C.ContainerButton>
 
+            <C.ContainerButton onPress={() => navigation.navigate('IncomesPerDay')}>
+                    <C.TitleSubContainer>Rendimentos por Dia</C.TitleSubContainer>
+                    <C.InformativeText>Clique para ver mais</C.InformativeText>
+            </C.ContainerButton>
+
+            <C.ContainerButton onPress={() => navigation.navigate('IncomesPerMonth')}>
+                    <C.TitleSubContainer>Rendimentos por Mês</C.TitleSubContainer>
+                    <C.InformativeText>Clique para ver mais</C.InformativeText>
+            </C.ContainerButton>
+
             <C.ContainerButton onPress={() => navigation.navigate('QuotaTableScreen')}>
                     <C.TitleSubContainer>Histórico da Cota</C.TitleSubContainer>
                     <C.InformativeText>Clique para ver mais</C.InformativeText>

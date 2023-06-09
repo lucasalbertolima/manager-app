@@ -7,7 +7,7 @@ const year = dataAtual.getFullYear();
 const month = dataAtual.getMonth() + 1;
 
 
-const request = async (method, endpoint, params, token = null, isImage = false) => {
+const request = async (method, endpoint, params, token = null) => {
     method = method.toLowerCase();
     let fullUrl = `${baseUrl}${endpoint}`;
     let body = null;
@@ -24,10 +24,7 @@ const request = async (method, endpoint, params, token = null, isImage = false) 
         break;
     }
     
-    let headers = {'Content-Type': 'application/json', 'Accept': 'application/json, application/pdf, text/plain, */*',};
-    if(isImage){
-        headers['Content-Type'] = 'multipart/form-data';
-    }
+    let headers = {'Content-Type': 'application/json', 'Accept': 'application/json, application/pdf, text/plain, */*'};
     if(token){
         headers.Authorization = `Bearer ${token}`;
     }
@@ -95,6 +92,18 @@ export default {
         return json;
     },
 
+    getIncomesPerDayHistoric: async (chosenSymbol) => {
+        let token = await AsyncStorage.getItem('token');
+        let json = await request('get', `/trade/incomes-per-day?length=&order_by=created_at&symbol=${chosenSymbol}&asc=0&date_start=&date_end=`, {}, token);
+        return json;
+    },
+
+    getIncomesPerMonthHistoric: async (chosenSymbol) => {
+        let token = await AsyncStorage.getItem('token');
+        let json = await request('get', `/trade/incomes-per-month?length=31&order_by=created_at&symbol=${chosenSymbol}&asc=0&date_start=&date_end=`, {}, token);
+        return json;
+    },
+
     getInvestmentsHistoric: async (chosenSymbol) => {
         let token = await AsyncStorage.getItem('token');
         let json = await request('get', `/trade/investments?past=true&length=50&order_by=created_at&type=&asc=&date_start=&symbol=${chosenSymbol}&date_end=`, {}, token);
@@ -128,12 +137,6 @@ export default {
     getSymbols: async () => {
         let token = await AsyncStorage.getItem('token');
         let json = await request('get', '/trade/symbols?active=1', {}, token);
-        return json;
-    },
-
-    getSymbolId: async (data) => {
-        let token = await AsyncStorage.getItem('token');
-        let json = await request('get', `/trade/symbol?symbol_id:gZ`, {}, token);
         return json;
     },
 
@@ -194,6 +197,8 @@ export default {
         let token = await AsyncStorage.getItem('token');
         let json = await request('post', '/trade/request-deposit', data, token);
         return json;
-    }
+    },
        
     }
+
+

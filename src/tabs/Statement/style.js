@@ -5,11 +5,11 @@ const isAndroid = Platform.OS === 'android';
 
 export default {
     Container: styled.ScrollView`
-        margin-top: ${isAndroid ? `${StatusBar.currentHeight}px` : 0};
+        margin-top: ${isAndroid ? `${StatusBar.currentHeight}px` : '30px'};
         flex: 1;
         padding: 10px;
         background-color: #FFF;
-        margin-bottom: 25px;
+        margin-bottom: 5px;
     `,
     ContainerInitial: styled.View`
         padding: 10px;
@@ -25,7 +25,7 @@ export default {
         background-color: #EBECF0;
         margin-bottom: 12px;
         border: 1px solid #a9a9a9;
-        padding: 10px
+        padding: 10px;
     `,
     TitleSubContainer: styled.Text`
         color: #000;

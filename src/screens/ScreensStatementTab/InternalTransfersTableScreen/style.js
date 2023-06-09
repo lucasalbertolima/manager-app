@@ -5,6 +5,7 @@ export default {
         flex: 1;
         padding: 10px;
         background-color: #F5F6FA;
+        margin: 10px;
     `,
     SubContainer: styled.View`
         background-color: #EBECF0;
@@ -20,16 +21,16 @@ export default {
     `,
     TitleSubContainer: styled.Text`
         color: #000;
-        font-size: 18px;
+        font-size: 17px;
         font-weight: bold;
     `,
     SubTitleSubContainer: styled.Text`
         color: #000;
-        font-size: 18px;
+        font-size: 17px;
     `,
     Balance: styled.Text`
         color: #000;
-        font-size: 15px;
+        font-size: 14.5px;
     `,
     InformativeText: styled.Text`
         color: #000;

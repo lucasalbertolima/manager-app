@@ -5,7 +5,7 @@ const isAndroid = Platform.OS === 'android';
 
 export default {
     Container: styled.ScrollView`
-        margin-top: ${isAndroid ? `${StatusBar.currentHeight}px` : 0};
+        margin-top: ${isAndroid ? `${StatusBar.currentHeight}px` : '30px'};
         flex: 1;
         padding: 10px;
         background-color: #FFF;

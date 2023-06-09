@@ -5,6 +5,7 @@ import { formatCurrency } from '../../functions';
 import { VictoryChart, VictoryTheme, VictoryLine } from 'victory-native';
 import {Picker} from '@react-native-picker/picker';
 import { Switch, RefreshControl } from "react-native";
+import { Ionicons } from '@expo/vector-icons'; 
 
 import api from '../../services/api';
 
@@ -131,12 +132,9 @@ export default () => {
             
             <C.SubContainer>
                 <C.SubContainerSwitch>
-                <Switch 
-                    trackColor={{false: '#777', true: '#8bf'}}
-                    thumbColor={showAmounts ? '#00f' : '#444'}
-                    value={showAmounts}
-                    onValueChange={toggleShowAmount}
-                />
+                <C.Icon onPress={toggleShowAmount}>
+                    <Ionicons name={!showAmounts ? 'eye' : 'eye-off'} size={24} color='black' />
+                </C.Icon>
                 <C.InformativeText>{!showAmounts ? 'Exibir Saldo' : 'Esconder Saldo'}</C.InformativeText>
                 </C.SubContainerSwitch>
                 <C.TitleSubContainer>Seu Patrimônio:</C.TitleSubContainer>

@@ -13,6 +13,8 @@ import HistoricTableScreen from "../screens/ScreensStatementTab/HistoricTableScr
 import InternalTransfersTableScreen from "../screens/ScreensStatementTab/InternalTransfersTableScreen";
 import InvestmentsTableScreen from "../screens/ScreensStatementTab/InvestmentsTableScreen";
 import RescuesTableScreen from "../screens/ScreensStatementTab/RescuesTableScreen";
+import IncomesPerDay from "../screens/ScreensStatementTab/IncomesPerDay";
+import IncomesPerMonth from "../screens/ScreensStatementTab/IncomesPerMonth";
 import QuotaTableScreen from "../screens/ScreensStatementTab/QuotaTableScreen";
 import WithdrawsTableScreen from "../screens/ScreensStatementTab/WithdrawsTableScreen";
 
@@ -35,7 +37,10 @@ const Stack = createStackNavigator();
 
 export default () => {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator screenOptions={{
+            headerTitleAlign: 'center',
+            headerBackTitleVisible: false
+        }}>
             <Stack.Screen
                 name="PreloadScreen"
                 component={PreloadScreen}
@@ -94,6 +99,20 @@ export default () => {
                 component={RescuesTableScreen}
                 options={{
                     title: 'Extrato - Resgates'
+                }}
+            />   
+            <Stack.Screen
+                name="IncomesPerDay"
+                component={IncomesPerDay}
+                options={{
+                    title: 'Extrato - Rendimentos por Dia'
+                }}
+            />   
+            <Stack.Screen
+                name="IncomesPerMonth"
+                component={IncomesPerMonth}
+                options={{
+                    title: 'Extrato - Rendimentos por Mês'
                 }}
             />   
             <Stack.Screen
