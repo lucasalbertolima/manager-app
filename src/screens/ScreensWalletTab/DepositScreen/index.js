@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import C from './style';
 import { CheckBox } from 'react-native-elements';
-import { StyleSheet, Modal, Text, RefreshControl} from "react-native";
+import { StyleSheet, Modal, Text, RefreshControl, View} from "react-native";
 import api from '../../../services/api';
-import { View } from "react-native";
 import { sendReceipt } from '../../../services/apiaxios';
 import * as DocumentPicker from 'expo-document-picker';
 

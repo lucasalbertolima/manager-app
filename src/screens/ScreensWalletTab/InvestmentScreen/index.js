@@ -63,7 +63,6 @@ export default () => {
                 client_id: "",
                 symbol: chosenSymbol
             };
-            console.log(data)
             let result = await api.requestNewInvestiment(data);
             if(result.error){
                 alert(result.error);
@@ -77,14 +76,14 @@ export default () => {
 
     }
 
-    const moreAmount = () => {
-        setAmount(amount + 1000)
+    const moreAmount = (value) => {
+        setAmount(amount + value)
     }
-    const lessAmount = () => {
-        if(amount>0){
-        setAmount(amount - 1000)
+    const lessAmount = (value) => {
+        if(amount > 0 && amount > value){
+        setAmount(amount - value)
         }else{
-            setAmount(0)
+            setAmount(amount)
         }
     }
 
@@ -151,14 +150,32 @@ export default () => {
                     </>
                 )}
                     <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-                    <C.ButtonValue onPress={lessAmount}>
+                    <C.ButtonValue onPress={() => lessAmount(1000)}>
                         <C.ButtonValueText>- R$ 1.000,00</C.ButtonValueText>
                     </C.ButtonValue>
-                    <C.ButtonValue onPress={moreAmount}>
+                    <C.ButtonValue onPress={() => moreAmount(1000)}>
                         <C.ButtonValueText>+ R$ 1.000,00</C.ButtonValueText>
                     </C.ButtonValue>
                     </View>
-                    
+
+                    <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+                    <C.ButtonValue onPress={() => lessAmount(10000)}>
+                        <C.ButtonValueText>- R$ 10.000,00</C.ButtonValueText>
+                    </C.ButtonValue>
+                    <C.ButtonValue onPress={() => moreAmount(10000)}>
+                        <C.ButtonValueText>+ R$ 10.000,00</C.ButtonValueText>
+                    </C.ButtonValue>
+                    </View>
+
+                    <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+                    <C.ButtonValue onPress={() => lessAmount(100000)}>
+                        <C.ButtonValueText>- R$ 100.000,00</C.ButtonValueText>
+                    </C.ButtonValue>
+                    <C.ButtonValue onPress={() => moreAmount(100000)}>
+                        <C.ButtonValueText>+ R$ 100.000,00</C.ButtonValueText>
+                    </C.ButtonValue>
+                    </View>
+
                     <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
                     <C.ButtonArea onPress={requestNewInvestiment}>
                         <C.ButtonText>Investir</C.ButtonText>

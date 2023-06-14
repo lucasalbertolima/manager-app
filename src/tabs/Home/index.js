@@ -14,11 +14,11 @@ export default () => {
 
     const navigation = useNavigation();
     const [refreshing, setRefreshing] = useState(false);
-    const [nameUser, setNameUser] = useState()
-    const [investment, setInvestment] = useState()
-    const [patrimony, setPatrimony] = useState()
-    const [balanceAvailableBrazil, setBalanceAvailableBrazil] = useState()
-    const [balanceAvailableExterior, setBalanceAvailableExterior] = useState()
+    const [nameUser, setNameUser] = useState('')
+    const [investment, setInvestment] = useState(0)
+    const [patrimony, setPatrimony] = useState(0)
+    const [balanceAvailableBrazil, setBalanceAvailableBrazil] = useState(0)
+    const [balanceAvailableExterior, setBalanceAvailableExterior] = useState(0)
     const [autoReinvestment, setAutoReinvestment] = useState();
     const [showAmounts, setShowAmounts] = useState(false);
 
@@ -44,8 +44,6 @@ export default () => {
         if(result && result.name) {
             setNameUser(result.name);
             setAutoReinvestment(result.auto_reinvestment === 1 ? true : false);
-        }else{
-            alert(result.error);
         }
     }
 
@@ -56,8 +54,6 @@ export default () => {
             setInvestment(result.balance);
             setBalanceAvailableBrazil(result.local_balance);
             setBalanceAvailableExterior(result.foreign_balance);
-        }else{
-            alert(result.error);
         }
     }
 
@@ -79,8 +75,6 @@ export default () => {
     
           setPerformances(performancesWithAccumulated);
           setCount(result.count);
-        } else {
-          alert(result.error);
         }
       };
     
@@ -89,8 +83,6 @@ export default () => {
         if(result) {
             setSymbols(result);
             setChosenSymbol(result[0].id);
-        }else{
-            alert(result.error);
         }
     }
 

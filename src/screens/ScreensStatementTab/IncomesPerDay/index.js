@@ -48,10 +48,10 @@ export default () => {
 }
 
 const renderItem = ({ item, index }) => {
-  let acumulado = performances
-    .slice(0, index + 1)
-    .reduce((acumulado, performance) => acumulado + performance.performance?.amount_percentage, 0);
-
+  let acumulado = 0;
+  for (let i = index; i < performances.length; i++) {
+    acumulado += performances[i]?.performance?.amount_percentage || 0;
+  }
   acumulado = acumulado.toFixed(4); // Arredonda para quatro casas decimais
 
   const formattedDate = format(parseISO(item?.performance.date), "dd/MM/yyyy");
@@ -102,7 +102,7 @@ return (
     <FlatList
       data={performances}
       renderItem={renderItem}
-      keyExtractor={(item) => item.performance.performance_id}
+      keyExtractor={(item) => item.performance.id}
     />
   </C.Container>
 );

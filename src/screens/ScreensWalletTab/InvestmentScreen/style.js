@@ -70,7 +70,7 @@ export default {
     `,
     ButtonValueText: styled.Text`
     color: #FFF;
-    font-size: 18px;
+    font-size: 15px;
     font-weight: bold;
 `,
 };

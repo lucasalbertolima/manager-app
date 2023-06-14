@@ -1,15 +1,19 @@
 {
   "expo": {
-    "name": "trade-manager-app",
-    "slug": "trade-manager-app",
-    "version": "1.0.0",
+    "name": "Manager Trading App",
+    "slug": "Manager-Trading-app",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000000"
     },
     "plugins": [
       [
@@ -34,7 +38,9 @@
         "NSPhotoLibraryAddUsageDescription": "Permissão para acessar a biblioteca de fotos",
         "NSPhotoLibraryUsageDescription": "Permissão para acessar a biblioteca de fotos",
         "NSDocumentPickerUsageDescription": "Permissão para acessar documentos"
-      }
+      },
+      "bundleIdentifier": "com.managertrading.managertrading",
+      "buildNumber": "1.1.0"
     },
     "android": {
       "adaptiveIcon": {
@@ -42,12 +48,16 @@
         "backgroundColor": "#ffffff"
       },
       "permissions": [
-        "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE"
-      ]
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.managertrading.managertrading",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {}
   }
 }
